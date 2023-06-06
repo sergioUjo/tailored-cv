@@ -15,7 +15,7 @@ const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Tailored Cv</title>
+        <title>TailoredCv</title>
         <meta
           name="description"
           content="The ultimate app designed to elevate your job application game. Empowers you to create personalized resumes and cover letters for each specific position you apply to."
@@ -25,7 +25,7 @@ const Home: NextPage = () => {
           property="og:description"
           content="The ultimate app designed to elevate your job application game. Empowers you to create personalized resumes and cover letters for each specific position you apply to."
         />
-        <meta property="og:title" content="Tailored Cv" />
+        <meta property="og:title" content="TailoredCv" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="min-h-screen bg-white">
@@ -37,7 +37,7 @@ const Home: NextPage = () => {
           <div className={"m-auto flex max-w-7xl justify-between px-4"}>
             <div className={"flex items-center gap-2 fill-primary-600"}>
               <Logo className="h-12 w-12" />
-              <p className={"text-lg font-bold"}>Tailored cv</p>
+              <p className={"text-lg font-bold"}>TailoredCv</p>
             </div>
             <Link
               href={"/#waitlist"}
@@ -356,7 +356,7 @@ const Home: NextPage = () => {
             <div className={"flex flex-col gap-6"}>
               <div className={"flex items-center gap-2 fill-primary-600"}>
                 <Logo className="h-12 w-12 fill-white" />
-                <p className={"text-lg font-bold"}>Tailored cv</p>
+                <p className={"text-lg font-bold"}>TailoredCv</p>
               </div>
               <p>
                 TailoredCv helps increase your chances of getting the dream job
