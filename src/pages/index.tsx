@@ -28,7 +28,7 @@ const Home: NextPage = () => {
         <meta property="og:title" content="Tailored Cv" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="min-h-screen">
+      <main className="min-h-screen bg-white">
         <header
           className={
             "sticky top-0 z-50 border-b border-solid border-gray-300 bg-white py-1 shadow-2xl"
