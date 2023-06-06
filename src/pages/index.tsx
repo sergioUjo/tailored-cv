@@ -120,7 +120,7 @@ const Home: NextPage = () => {
                 professional journey, skills, and achievements. By having access
                 to a comprehensive overview of your background, we then can
                 tailor your resume and cover letter to perfectly match your
-                qualifications with the position you're targeting.
+                qualifications with the position you are targeting.
               </p>
             </div>
 
@@ -187,7 +187,7 @@ const Home: NextPage = () => {
               </div>
               <p>
                 Provide us with the position description, including the
-                requirements and any additional "nice to have" qualifications
+                requirements and any additional nice to have qualifications
               </p>
             </div>
             <div
