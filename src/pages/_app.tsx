@@ -1,5 +1,5 @@
 import { type AppType } from "next/app";
-import "~/styles/globals.css";
+import "../styles/globals.css";
 import { PT_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { api } from "../utils/api";

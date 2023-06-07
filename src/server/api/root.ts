@@ -1,5 +1,6 @@
 import { createTRPCRouter, publicProcedure } from "./trpc";
 import { z } from "zod";
+import { insertWaitlist } from "../db";
 
 /**
  * This is the primary router for your server.
@@ -12,9 +13,7 @@ export const appRouter = createTRPCRouter({
       z.object({ comment: z.optional(z.string()), email: z.string().email() })
     )
     .mutation(({ input }) => {
-      return {
-        greeting: `Hello ${input.email}`,
-      };
+      return insertWaitlist(input.email, input.comment);
     }),
 });
 
