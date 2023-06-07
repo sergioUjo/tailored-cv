@@ -1,31 +1,32 @@
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import Logo from "~/svg/Logo";
-import Underline from "~/svg/Underline";
 import { IoChevronDownOutline } from "@react-icons/all-files/io5/IoChevronDownOutline";
 import { HiOutlinePlus } from "@react-icons/all-files/hi/HiOutlinePlus";
-import WaitListForm from "~/client/WaitListForm";
-import CvSkeleton from "~/client/CvSkeleton";
-import PositionSkeleton from "~/client/PostionSkeleton";
+
 import { FaEquals } from "@react-icons/all-files/fa/FaEquals";
-import CoverSkeleton from "~/client/CoverSkeleton";
+import Logo from "../svg/Logo";
+import Underline from "../svg/Underline";
+import CvSkeleton from "../client/CvSkeleton";
+import PositionSkeleton from "../client/PostionSkeleton";
+import CoverSkeleton from "../client/CoverSkeleton";
+import WaitListForm from "../client/WaitListForm";
 
 const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>TailoredCv</title>
+        <title>TailoredCV</title>
         <meta
           name="description"
-          content="The ultimate app designed to elevate your job application game. Empowers you to create personalized resumes and cover letters for each specific position you apply to."
+          content="The ultimate app designed to elevate your job application game. Empowers you to create personalized résumés and cover letters for each specific position you apply to."
         />
         <meta property="og:image" content="/tailoredBite.png" />
         <meta
           property="og:description"
-          content="The ultimate app designed to elevate your job application game. Empowers you to create personalized resumes and cover letters for each specific position you apply to."
+          content="The ultimate app designed to elevate your job application game. Empowers you to create personalized résumés and cover letters for each specific position you apply to."
         />
-        <meta property="og:title" content="TailoredCv" />
+        <meta property="og:title" content="TailoredCV" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="min-h-screen bg-white">
@@ -37,7 +38,7 @@ const Home: NextPage = () => {
           <div className={"m-auto flex max-w-7xl justify-between px-4"}>
             <div className={"flex items-center gap-2 fill-primary-600"}>
               <Logo className="h-12 w-12" />
-              <p className={"text-lg font-bold"}>TailoredCv</p>
+              <p className={"text-lg font-bold"}>TailoredCV</p>
             </div>
             <Link
               href={"/#waitlist"}
@@ -64,11 +65,11 @@ const Home: NextPage = () => {
                   }
                 />
               </span>{" "}
-              resume everytime
+              résumé everytime
             </h1>
             <h3 className={"text-center text-xl"}>
               The ultimate app designed to elevate your job application game.
-              Empowers you to create personalized resumes and cover letters{" "}
+              Empowers you to create personalized résumés and cover letters{" "}
               <span
                 className={
                   "relative z-10 whitespace-nowrap bg-transparent px-1 font-bold text-black"
@@ -106,7 +107,7 @@ const Home: NextPage = () => {
                   "h-fit w-fit rounded-lg border-2 border-solid border-secondary-600 px-1 pb-1"
                 }
               >
-                <p className={"mb-2 font-bold text-secondary-600"}>One Cv</p>
+                <p className={"mb-2 font-bold text-secondary-600"}>One CV</p>
                 <CvSkeleton name={"John Doe"} />
               </div>
               <HiOutlinePlus />
@@ -116,7 +117,7 @@ const Home: NextPage = () => {
                 }
               >
                 <p className={"mb-2 font-bold text-primary-600"}>
-                  Any position
+                  Any Position
                 </p>
                 <PositionSkeleton name={"Software Engineer - FAANG"} />
               </div>
@@ -139,14 +140,14 @@ const Home: NextPage = () => {
 
           <p className={"mb-2 text-center text-base"}>
             {" "}
-            Gone are the days of manually customizing your resume and struggling
+            Gone are the days of manually customizing your résumé and struggling
             to highlight the most relevant skills and experiences for a
             particular job.
           </p>
           <p className={"text-center text-base"}>
             {" "}
             With the help of Chat-GPT we analyze your background and generate a
-            custom resume and cover letter, emphasizing relevant aspects.
+            custom résumé and cover letter, emphasizing relevant aspects.
             Present yourself as an ideal candidate with optimized content,
             streamlined structure, and enhanced readability for a polished final
             product.
@@ -174,11 +175,11 @@ const Home: NextPage = () => {
               </h3>
               <p className={"text-base"}>
                 To ensure the utmost accuracy and effectiveness, we request that
-                you provide us with a detailed, long-form resume. This
+                you provide us with a detailed, long-form résumé. This
                 comprehensive document allows our app to fully analyze your
                 professional journey, skills, and achievements. By having access
                 to a comprehensive overview of your background, we then can
-                tailor your resume and cover letter to perfectly match your
+                tailor your résumé and cover letter to perfectly match your
                 qualifications with the position you are targeting.
               </p>
             </div>
@@ -304,7 +305,7 @@ const Home: NextPage = () => {
             <div className={"flex flex-1 flex-col gap-4 "}>
               <div className={"relative w-fit"}>
                 <h2 className={"relative z-10 text-3xl font-bold"}>
-                  Get a tailored resume and cover letter
+                  Get a tailored résumé and cover letter
                 </h2>
                 <div
                   className={
@@ -313,7 +314,7 @@ const Home: NextPage = () => {
                 />
               </div>
               <p>
-                Retrieve a customized resume and cover letter, precisely
+                Retrieve a customized résumé and cover letter, precisely
                 highlighting the most relevant aspects of your background for
                 that specific position. It optimizes the content, streamlines
                 the structure, and enhances the overall readability, resulting
@@ -338,7 +339,7 @@ const Home: NextPage = () => {
                 "relative z-10 whitespace-nowrap bg-transparent px-1 font-bold text-black"
               }
             >
-              <div
+              <span
                 className={"absolute inset-0 -z-10 -rotate-1 bg-green-400"}
               />
               discount
@@ -356,10 +357,10 @@ const Home: NextPage = () => {
             <div className={"flex flex-col gap-6"}>
               <div className={"flex items-center gap-2 fill-primary-600"}>
                 <Logo className="h-12 w-12 fill-white" />
-                <p className={"text-lg font-bold"}>TailoredCv</p>
+                <p className={"text-lg font-bold"}>TailoredCV</p>
               </div>
               <p>
-                TailoredCv helps increase your chances of getting the dream job
+                TailoredCV helps increase your chances of getting the dream job
               </p>
             </div>
           </div>
