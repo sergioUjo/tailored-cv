@@ -21,7 +21,10 @@ const Home: NextPage = () => {
           name="description"
           content="The ultimate app designed to elevate your job application game. Empowers you to create personalized résumés and cover letters for each specific position you apply to."
         />
-        <meta property="og:image" content="/tailoredBite.png" />
+        <meta
+          property="og:image"
+          content="https://tailored-cv.vercel.app/tailoredBite.png"
+        />
         <meta
           property="og:description"
           content="The ultimate app designed to elevate your job application game. Empowers you to create personalized résumés and cover letters for each specific position you apply to."
