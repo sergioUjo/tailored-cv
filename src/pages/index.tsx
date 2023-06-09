@@ -7,10 +7,10 @@ import { HiOutlinePlus } from "@react-icons/all-files/hi/HiOutlinePlus";
 import { FaEquals } from "@react-icons/all-files/fa/FaEquals";
 import Logo from "../svg/Logo";
 import Underline from "../svg/Underline";
-import CvSkeleton from "../client/CvSkeleton";
-import PositionSkeleton from "../client/PostionSkeleton";
-import CoverSkeleton from "../client/CoverSkeleton";
-import WaitListForm from "../client/WaitListForm";
+import CvSkeleton from "../components/CvSkeleton";
+import PositionSkeleton from "../components/PostionSkeleton";
+import CoverSkeleton from "../components/CoverSkeleton";
+import WaitListForm from "../components/WaitListForm";
 
 const Home: NextPage = () => {
   return (

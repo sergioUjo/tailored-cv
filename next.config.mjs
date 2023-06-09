@@ -42,4 +42,4 @@ const withMDX = mdx({
 })
 
 // Merge MDX config with Next.js config
-export default bundleAnalyzer(withMDX(config))
+export default bundleAnalyzer(config)
