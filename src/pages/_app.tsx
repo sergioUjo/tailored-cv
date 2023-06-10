@@ -9,7 +9,7 @@ const font = PT_Serif({
   subsets: ["latin"],
 });
 
-const MyApp: AppType = ({ Component, pageProps, router }) => {
+const MyApp: AppType = ({ Component, pageProps }) => {
   return (
     <main className={font.className}>
       <Component {...pageProps} />

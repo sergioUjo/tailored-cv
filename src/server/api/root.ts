@@ -51,9 +51,11 @@ export const appRouter = createTRPCRouter({
   profile: publicProcedure.input(profile).mutation(({ input }) => {
     return input;
   }),
-  gpt: publicProcedure.mutation(async () => {
-    await tellAJoke();
-  }),
+  gpt: publicProcedure
+    .input(z.object({ description: z.string() }))
+    .mutation(async ({ input }) => {
+      return tellAJoke(input.description);
+    }),
 });
 
 // export type definition of API

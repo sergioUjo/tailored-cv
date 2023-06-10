@@ -14,51 +14,62 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       : "flex flex-row items-center gap-2 px-4 py-1.5 text-sm focus:outline-red-500 rounded-md font-bold bg-primary-50 text-primary-600 cursor-default";
   }
   return (
-    <div className={"m-auto flex h-screen max-w-7xl"}>
-      <div className={"flexflex-col gap-y-2 border-r border-gray-200 p-2"}>
-        <div className={"flex w-52 flex-col gap-y-2 p-2"}>
-          <Link className={isActive("/app")} href={"/app"}>
-            <RiDashboardLine size={16} />
-            Overview
-          </Link>
-          <Link className={isActive("/app/profile")} href={"/app/profile"}>
-            <BsFillPersonFill size={16} />
-            My profile
-          </Link>
-          <Link
-            className={isActive("/app/create-resume")}
-            href={"/app/create-resume"}
-          >
-            <VscTools size={16} />
-            Create résumé
-          </Link>
-          <Link
-            href={"/app/create-cover-letter"}
-            className={isActive("/app/create-cover-letter")}
-          >
-            <VscTools size={16} />
-            Create cover letter
-          </Link>
-          <Link href={"/app/resumes"} className={isActive("/app/resumes")}>
-            <IoDocumentTextOutline size={16} />
-            My résumés
-          </Link>
-          <Link
-            href={"/app/cover-letters"}
-            className={isActive("/app/cover-letters")}
-          >
-            <IoDocumentTextOutline size={16} />
-            My cover letters
-          </Link>
+    <div className={"flex h-screen flex-col bg-gray-50"}>
+      <div className={"h-10 border-b  border-gray-200 bg-white p-2 shadow-md"}>
+        a
+      </div>
+      <div className={"flex flex-1"}>
+        <div
+          className={
+            "flex flex-col justify-between border-r border-gray-200 bg-white p-2 shadow-lg"
+          }
+        >
+          <div className={"flex w-52 flex-col gap-2"}>
+            <Link className={isActive("/app")} href={"/app"}>
+              <RiDashboardLine size={16} />
+              Overview
+            </Link>
+            <Link className={isActive("/app/profile")} href={"/app/profile"}>
+              <BsFillPersonFill size={16} />
+              My profile
+            </Link>
+            <Link
+              className={isActive("/app/create-resume")}
+              href={"/app/create-resume"}
+            >
+              <VscTools size={16} />
+              Create résumé
+            </Link>
+            <Link
+              href={"/app/create-cover-letter"}
+              className={isActive("/app/create-cover-letter")}
+            >
+              <VscTools size={16} />
+              Create cover letter
+            </Link>
+            <Link href={"/app/resumes"} className={isActive("/app/resumes")}>
+              <IoDocumentTextOutline size={16} />
+              My résumés
+            </Link>
+            <Link
+              href={"/app/cover-letters"}
+              className={isActive("/app/cover-letters")}
+            >
+              <IoDocumentTextOutline size={16} />
+              My cover letters
+            </Link>
+          </div>
+          <div>
+            <Link href={"/app/settings"} className={isActive("/app/settings")}>
+              Setting
+            </Link>
+            <button type={"button"}>Logout</button>
+          </div>
         </div>
-        <div>
-          <Link href={"/app/settings"} className={isActive("/app/settings")}>
-            Setting
-          </Link>
-          <button type={"button"}>Logout</button>
+        <div className={"m-auto h-full max-w-7xl flex-1 p-4 lg:ml-20"}>
+          {children}
         </div>
       </div>
-      <div className={"flex-1 p-4 lg:ml-20"}>{children}</div>
     </div>
   );
 }
