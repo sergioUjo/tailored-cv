@@ -2,6 +2,7 @@ import { createTRPCRouter, publicProcedure } from "./trpc";
 import { z } from "zod";
 import { insertWaitlist } from "../db";
 import { tellAJoke } from "../../utils/langchain";
+import { profileRouter } from "./routers/profile";
 
 const position = z.object({
   start: z.date(),
@@ -18,20 +19,13 @@ const education = z.object({
   title: z.string(),
   school: z.string(),
 });
-const user = z.object({
-  id: z.string(),
-  email: z.string().email(),
-  firstName: z.string(),
-  lastName: z.string(),
-  phone: z.string(),
-});
 const profile = z.object({
-  title: z.string(),
+  title: z.string().optional(),
   description: z.string(),
-  email: z.string().email(),
-  phone: z.string(),
-  location: z.string(),
-  linkedIn: z.string(),
+  email: z.string().email().optional(),
+  phone: z.string().optional(),
+  location: z.string().optional(),
+  linkedIn: z.string().optional(),
   positions: z.array(position),
   educations: z.array(education),
 });
@@ -48,9 +42,7 @@ export const appRouter = createTRPCRouter({
     .mutation(({ input }) => {
       return insertWaitlist(input.email, input.comment);
     }),
-  profile: publicProcedure.input(profile).mutation(({ input }) => {
-    return input;
-  }),
+  profile: profileRouter,
   gpt: publicProcedure
     .input(z.object({ description: z.string() }))
     .mutation(async ({ input }) => {

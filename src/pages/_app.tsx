@@ -3,6 +3,7 @@ import "../styles/globals.css";
 import { PT_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { api } from "../utils/api";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const font = PT_Serif({
   weight: "400",
@@ -11,10 +12,12 @@ const font = PT_Serif({
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <main className={font.className}>
-      <Component {...pageProps} />
-      <Analytics />
-    </main>
+    <ClerkProvider>
+      <main className={font.className}>
+        <Component {...pageProps} />
+        <Analytics />
+      </main>{" "}
+    </ClerkProvider>
   );
 };
 export default api.withTRPC(MyApp);

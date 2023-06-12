@@ -1,7 +1,13 @@
-import { longtext, mysqlTable, serial, text } from "drizzle-orm/mysql-core";
+import { json, mysqlTable, text, tinytext } from "drizzle-orm/mysql-core";
 
-export const waitlist = mysqlTable("waitlist", {
-  id: serial("id").primaryKey(),
+export const users = mysqlTable("user", {
+  id: tinytext("id").primaryKey(),
   email: text("email"),
-  comment: longtext("comment"),
+  firstName: text("firstName"),
+  lastName: text("lastName"),
+  phone: text("phone"),
+  description: text("description"),
+  title: text("title"),
+  experiences: json("experiences"),
+  educations: json("educations"),
 });

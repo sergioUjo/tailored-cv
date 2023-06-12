@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AppLayout from "../../components/AppLayout";
 import { api } from "../../utils/api";
 import { ImMagicWand } from "@react-icons/all-files/im/ImMagicWand";
+import { useAuth } from "@clerk/nextjs";
 
 function GenerateButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
@@ -18,10 +19,78 @@ function GenerateButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
     </button>
   );
 }
+interface ExperienceProps {
+  company: string;
+  title: string;
+  startDate: string;
+  endDate?: string;
+  location?: string;
+  description: string;
+}
+function Experience({
+  endDate,
+  startDate,
+  title,
+  company,
+  location,
+  description,
+}: ExperienceProps) {
+  const [currentDescription, setCurrentDescription] = useState("");
+  const endString = endDate
+    ? new Date(endDate).toLocaleString(undefined, {
+        month: "long",
+        year: "numeric",
+      })
+    : "present";
+  const startString = new Date(startDate).toLocaleDateString(undefined, {
+    month: "long",
+    year: "numeric",
+  });
+  return (
+    <div className={"mb-1"}>
+      <div className={"flex justify-between"}>
+        <div>
+          <p className={"text-base font-bold"}>{company}</p>
+          <p className={"text-base text-gray-700 underline"}>{title}</p>
+        </div>
+        <div>
+          <p className={"text-right text-base font-bold"}>{location}</p>
+          <p className={"text-base text-gray-700 underline"}>
+            {startString} - {endString}
+          </p>
+        </div>
+      </div>
+      <div className={"my-1 flex justify-end gap-1"}>
+        <button
+          onClick={() => setCurrentDescription(description)}
+          className={
+            "relative w-fit rounded-lg bg-primary-600 px-4  py-1 text-base  font-bold text-white hover:bg-primary-700 focus:outline-primary-700  focus:ring-offset-2 disabled:bg-gray-50 disabled:text-gray-400"
+          }
+        >
+          Use Mine
+        </button>
+        <GenerateButton disabled={false} onClick={() => {}}></GenerateButton>
+      </div>
+      <textarea
+        value={currentDescription}
+        onChange={(e) => setCurrentDescription(e.target.value)}
+        className={
+          "min-h-[200px] w-full rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"
+        }
+      />
+    </div>
+  );
+}
 function CreateResume() {
   const [resumeDescription, setResumeDescription] = useState("");
   const [jobDescription, setJobDescription] = useState("");
   const tellAJOKE = api.gpt.useMutation({ onSuccess: setResumeDescription });
+  const auth = useAuth();
+
+  const profile = api.profile.get.useQuery(auth.userId ?? "", {
+    enabled: !!auth.userId,
+  });
+  // @ts-ignore
   return (
     <AppLayout>
       <h1 className={"text-xl font-bold"}>Profile</h1>
@@ -30,30 +99,6 @@ function CreateResume() {
           "flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-md"
         }
       >
-        <h2 className={"text-lg font-medium"}>Base Information</h2>
-        {/*<label htmlFor={"name"}>Name *</label>*/}
-        {/*<input*/}
-        {/*  id={"name"}*/}
-        {/*  type={"text"}*/}
-        {/*  className={*/}
-        {/*    "rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"*/}
-        {/*  }*/}
-        {/*/>*/}
-        {/*<label htmlFor={"lastName"}>Last Name</label>*/}
-        {/*<input*/}
-        {/*  id={"lastName"}*/}
-        {/*  type={"text"}*/}
-        {/*  className={*/}
-        {/*    "rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"*/}
-        {/*  }*/}
-        {/*/>*/}
-        {/*<label>Title</label>*/}
-        {/*<input*/}
-        {/*  type={"text"}*/}
-        {/*  className={*/}
-        {/*    "rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"*/}
-        {/*  }*/}
-        {/*/>*/}
         <label>Job description</label>
         <textarea
           onChange={(e) => setJobDescription(e.target.value)}
@@ -61,9 +106,22 @@ function CreateResume() {
             "rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"
           }
         />
+      </div>
+      <div
+        className={
+          "mt-4 flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-md"
+        }
+      >
         <div>
-          <div className={"mb-2 flex justify-between"}>
-            <label>Resume Description</label>
+          <p className={"text-center text-2xl text-gray-500"}>
+            {profile.data?.firstName + " " + profile.data?.lastName}
+          </p>
+          <div>
+            <p className={"text-center text-base text-gray-500"}>
+              {profile.data?.title} | sergiozaraujoz98@gmail.com | +55 11 9 9999
+            </p>
+          </div>
+          <div className={"mb-1 flex justify-end"}>
             <GenerateButton
               disabled={tellAJOKE.isLoading}
               onClick={() => tellAJOKE.mutate({ description: jobDescription })}
@@ -76,6 +134,16 @@ function CreateResume() {
               "w-full rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"
             }
           />
+          <h2 className={"mb-2 border-b border-black text-xl"}>Education</h2>
+          <h2 className={"mb-2 border-b border-black text-xl"}>
+            Professional Experience
+          </h2>
+          {profile.data?.experiences.map((experience, i) => (
+            <Experience {...experience} key={i} />
+          ))}
+          <h2 className={"mb-2 border-b border-black text-xl"}>
+            Professional Experience
+          </h2>
         </div>
       </div>
     </AppLayout>
