@@ -2,12 +2,42 @@ import React, { useState } from "react";
 import AppLayout from "../../components/AppLayout";
 import { api } from "../../utils/api";
 import { ImMagicWand } from "@react-icons/all-files/im/ImMagicWand";
-import { useAuth } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 
-function GenerateButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+interface GenerateButtonProps {
+  type: string;
+  jobDescription: string;
+  onSuccess: (description: string) => void;
+  index: number;
+}
+
+function GenerateButton({
+  onSuccess,
+  index,
+  type,
+  jobDescription,
+}: GenerateButtonProps) {
+  const auth = useUser();
+  const context = api.useContext();
+  const aiWrite = api.profile.aiWrite.useMutation({
+    onSuccess: async (data) => {
+      onSuccess(data ?? "");
+      await context.profile.get.invalidate();
+    },
+  });
+
   return (
     <button
-      {...props}
+      type={"button"}
+      disabled={aiWrite.isLoading}
+      onClick={() =>
+        aiWrite.mutate({
+          jobDescription: jobDescription,
+          type: type,
+          index: index,
+          userId: auth.user?.id ?? "",
+        })
+      }
       className={
         "relative w-fit rounded-lg bg-secondary-600 py-1 pl-8 pr-4 text-base  font-bold text-white hover:bg-secondary-700 focus:outline-secondary-700  focus:ring-offset-2 disabled:bg-gray-50 disabled:text-gray-400"
       }
@@ -19,6 +49,7 @@ function GenerateButton(props: React.ButtonHTMLAttributes<HTMLButtonElement>) {
     </button>
   );
 }
+
 interface ExperienceProps {
   company: string;
   title: string;
@@ -26,14 +57,21 @@ interface ExperienceProps {
   endDate?: string;
   location?: string;
   description: string;
+  index: number;
+  type: string;
+  jobDescription: string;
 }
+
 function Experience({
   endDate,
   startDate,
   title,
+  type,
   company,
   location,
   description,
+  index,
+  jobDescription,
 }: ExperienceProps) {
   const [currentDescription, setCurrentDescription] = useState("");
   const endString = endDate
@@ -63,13 +101,16 @@ function Experience({
       <div className={"my-1 flex justify-end gap-1"}>
         <button
           onClick={() => setCurrentDescription(description)}
-          className={
-            "relative w-fit rounded-lg bg-primary-600 px-4  py-1 text-base  font-bold text-white hover:bg-primary-700 focus:outline-primary-700  focus:ring-offset-2 disabled:bg-gray-50 disabled:text-gray-400"
-          }
+          className={"btn-primary py-1"}
         >
           Use Mine
         </button>
-        <GenerateButton disabled={false} onClick={() => {}}></GenerateButton>
+        <GenerateButton
+          onSuccess={setCurrentDescription}
+          type={type}
+          jobDescription={jobDescription}
+          index={index}
+        />
       </div>
       <textarea
         value={currentDescription}
@@ -81,14 +122,14 @@ function Experience({
     </div>
   );
 }
+
 function CreateResume() {
   const [resumeDescription, setResumeDescription] = useState("");
   const [jobDescription, setJobDescription] = useState("");
-  const tellAJOKE = api.gpt.useMutation({ onSuccess: setResumeDescription });
-  const auth = useAuth();
+  const auth = useUser();
 
-  const profile = api.profile.get.useQuery(auth.userId ?? "", {
-    enabled: !!auth.userId,
+  const profile = api.profile.get.useQuery(auth.user?.id ?? "", {
+    enabled: !!auth.user?.id,
   });
   // @ts-ignore
   return (
@@ -118,14 +159,17 @@ function CreateResume() {
           </p>
           <div>
             <p className={"text-center text-base text-gray-500"}>
-              {profile.data?.title} | sergiozaraujoz98@gmail.com | +55 11 9 9999
+              {profile.data?.title} | {profile.data?.email} |{" "}
+              {profile.data?.phone}
             </p>
           </div>
           <div className={"mb-1 flex justify-end"}>
             <GenerateButton
-              disabled={tellAJOKE.isLoading}
-              onClick={() => tellAJOKE.mutate({ description: jobDescription })}
-            ></GenerateButton>
+              onSuccess={setResumeDescription}
+              type={"description"}
+              jobDescription={jobDescription}
+              index={2}
+            />
           </div>
           <textarea
             value={resumeDescription}
@@ -135,11 +179,26 @@ function CreateResume() {
             }
           />
           <h2 className={"mb-2 border-b border-black text-xl"}>Education</h2>
+          {profile.data?.educations.map((experience, i) => (
+            <Experience
+              {...experience}
+              key={i}
+              index={i}
+              type={"education"}
+              jobDescription={jobDescription}
+            />
+          ))}
           <h2 className={"mb-2 border-b border-black text-xl"}>
             Professional Experience
           </h2>
           {profile.data?.experiences.map((experience, i) => (
-            <Experience {...experience} key={i} />
+            <Experience
+              {...experience}
+              key={i}
+              index={i}
+              type={"experience"}
+              jobDescription={jobDescription}
+            />
           ))}
           <h2 className={"mb-2 border-b border-black text-xl"}>
             Professional Experience

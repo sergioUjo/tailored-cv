@@ -1,4 +1,4 @@
-import { type AppType } from "next/app";
+import { AppProps, type AppType } from "next/app";
 import "../styles/globals.css";
 import { PT_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
@@ -10,13 +10,13 @@ const font = PT_Serif({
   subsets: ["latin"],
 });
 
-const MyApp: AppType = ({ Component, pageProps }) => {
+const MyApp: AppType = ({ Component, pageProps, router }: AppProps) => {
   return (
     <ClerkProvider>
       <main className={font.className}>
         <Component {...pageProps} />
         <Analytics />
-      </main>{" "}
+      </main>
     </ClerkProvider>
   );
 };
