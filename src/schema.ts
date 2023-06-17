@@ -6,7 +6,7 @@ export const users = mysqlTable("user", {
   firstName: text("firstName").notNull(),
   lastName: text("lastName").notNull(),
   phone: text("phone").notNull(),
-  tokens: int("token").notNull().default(0),
+  tokens: int("token").notNull(),
   description: text("description").notNull(),
   title: text("title").notNull(),
   experiences: json("experiences").notNull(),

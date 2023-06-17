@@ -19,6 +19,7 @@ async function request(
 ) {
   const llm = new OpenAI({
     openAIApiKey: "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",
+    modelName: "gpt-3.5-turbo",
     callbacks: [
       {
         handleLLMEnd(output: LLMResult): Promise<void> | void {

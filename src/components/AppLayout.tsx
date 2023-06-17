@@ -34,19 +34,20 @@ function UserTokens() {
   const profile = api.profile.get.useQuery(user.user?.id ?? "", {
     enabled: !!user.user?.id,
   });
-  const updateProfile = useUpdateProfile();
-  if (!user.isLoaded || profile.isLoading) {
-    return <div></div>;
+  if (!user.isLoaded || !profile.data?.tokens) {
+    return <div className={"h-5 rounded-md bg-gray-100"} />;
   }
+  const tokens =
+    profile.data.tokens >= 1000
+      ? (profile.data.tokens / 1000).toFixed(0) + "k"
+      : profile.data.tokens;
   return (
-    <div>
-      <p className={"text-lg font-bold"}>Tokens {profile.data?.tokens}</p>
-      <button
-        type={"button"}
-        onClick={() => updateProfile.mutate({ tokens: 1000 })}
-      >
-        Buy tokens
-      </button>
+    <div className={"flex items-center justify-between text-sm font-medium"}>
+      <p className={"font-bold"}>AI Writter</p>
+      <div className={"flex items-center gap-2"}>
+        <p className={" rounded-md bg-gray-200 p-1"}>{tokens}</p>
+        <p>Words</p>
+      </div>
     </div>
   );
 }
@@ -67,7 +68,6 @@ function AppLayout({ children }: { children: React.ReactNode }) {
             <Logo className="h-8 w-8" />
             <p className={"text-lg font-bold"}>TailoredCV</p>
           </div>
-          <UserTokens></UserTokens>
           <UserButton />
         </div>
       </div>
@@ -112,14 +112,33 @@ function AppLayout({ children }: { children: React.ReactNode }) {
             My cover letters
           </Link>
         </div>
-        <div>
-          <Link href={"/app/settings"} className={isActive("/app/settings")}>
-            Setting
-          </Link>
-          <button type={"button"}>Logout</button>
+        <div className={"flex flex-col gap-2 rounded-md bg-gray-100 p-2"}>
+          <p className={"text-xl font-bold"}>Wallet</p>
+          <UserTokens />
+          <div className={"flex flex-col items-center gap-1"}>
+            <Link className={"btn-primary"} href={"/app/purchase"}>
+              Purchase Words
+            </Link>
+            <Link href={"/app/settings"} className={"relative"}>
+              <span
+                className={
+                  "relative z-10 whitespace-nowrap bg-transparent px-1 font-bold text-black"
+                }
+              >
+                <div
+                  className={"absolute inset-0 -z-10 -rotate-1 bg-green-400"}
+                />
+                Win free tokens
+              </span>{" "}
+            </Link>
+          </div>
         </div>
       </div>
-      <div className={"m-auto h-full max-h-full max-w-7xl flex-1 p-4 lg:pl-60"}>
+      <div
+        className={
+          "m-auto h-full max-h-full max-w-7xl flex-1 p-4 lg:pl-60 2xl:pl-28"
+        }
+      >
         {children}
       </div>
     </div>
