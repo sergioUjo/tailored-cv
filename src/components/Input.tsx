@@ -20,6 +20,9 @@ export function Input(
       previousValue && previousValue[currentValue as keyof Profile],
     errors
   ) as FieldError | undefined;
+  if (props.type == "date") {
+    console.log(props);
+  }
   return (
     <div className={"flex flex-col"}>
       <label

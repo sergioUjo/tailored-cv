@@ -6,6 +6,7 @@ import { api } from "../utils/api";
 import { ClerkProvider } from "@clerk/nextjs";
 import LoggedUserProvider from "../components/LoggedUserProvider";
 import { Suspense } from "react";
+import AppSkeleton from "../components/AppSkeleton";
 
 const font = PT_Serif({
   weight: "400",
@@ -16,7 +17,7 @@ const MyApp: AppType = ({ Component, pageProps, router }: AppProps) => {
   return (
     <ClerkProvider>
       <LoggedUserProvider>
-        <Suspense fallback={<div />}>
+        <Suspense fallback={<AppSkeleton />}>
           <main className={font.className}>
             <Component {...pageProps} />
             <Analytics />

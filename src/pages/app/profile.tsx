@@ -35,9 +35,9 @@ function SaveButton({ disabled }: SaveButtonProps) {
 }
 function ProfileForm() {
   const auth = useContext(LoggedUserContext);
-  const [selectedTab, setSelectedTab] = useState<number>(0);
-  const [hasChanges, setHasChanges] = useState<boolean>(false);
-  const profile = api.profile.get.useQuery();
+  const [selectedTab, setSelectedTab] = useState(0);
+  const [hasChanges, setHasChanges] = useState(false);
+  const profile = api.profile.get.useQuery(undefined, { suspense: true });
   const updateProfile = api.profile.update.useMutation({
     onSuccess: async () => {
       setHasChanges(false);
@@ -50,8 +50,7 @@ function ProfileForm() {
     handleSubmit,
     control,
     watch,
-    reset,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<Profile>({
     defaultValues: {
       firstName: profile.data?.firstName ?? "",
@@ -84,30 +83,27 @@ function ProfileForm() {
   if (profile.isLoading) {
     return;
   }
-  function tabChangeHandler(index: number) {
-    if (hasChanges) {
-      reset();
-    }
-    setSelectedTab(index);
-  }
   return (
     <AppLayout>
       <h1 className={"mb-4 text-4xl font-bold text-primary-600"}>Profile</h1>
-      <Tab.Group selectedIndex={selectedTab} onChange={tabChangeHandler}>
-        <Tab.List className="mb-4 flex space-x-1 rounded-lg bg-secondary-900/20 p-1">
-          {["Base Information", "Experiences", "Education"].map((category) => (
-            <Tab
-              key={category}
-              className={({ selected }) =>
-                "w-full rounded-lg py-2 text-lg leading-5 " +
-                (selected
-                  ? "bg-white font-bold text-primary-600 shadow"
-                  : "font-medium text-white hover:bg-white/[0.12] hover:text-white")
-              }
-            >
-              <h2>{category}</h2>
-            </Tab>
-          ))}
+      <Tab.Group selectedIndex={selectedTab} onChange={setSelectedTab}>
+        <Tab.List className="mb-4 grid grid-cols-3 gap-4">
+          {["Base Information", "Experiences", "Education"].map(
+            (category, i) => (
+              <Tab
+                key={category}
+                className={({ selected }) =>
+                  "rounded-lg border border-solid border-gray-200 py-2 text-lg leading-5 shadow disabled:bg-gray-100 disabled:text-gray-500 " +
+                  (selected
+                    ? "bg-secondary-600 font-bold text-white "
+                    : "bg-white font-medium text-secondary-600 hover:bg-secondary-50")
+                }
+                disabled={!isValid && i !== selectedTab}
+              >
+                <h2>{category}</h2>
+              </Tab>
+            )
+          )}
         </Tab.List>
         <form
           onSubmit={handleSubmit((data) => {
