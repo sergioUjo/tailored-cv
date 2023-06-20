@@ -18,3 +18,13 @@ export interface Profile {
   experiences: Experience[];
   educations: Experience[];
 }
+
+export interface Resume {
+  id: number;
+  title: string;
+  userId: string;
+  experiences: Experience[];
+  educations: Experience[];
+  jobDescription: string;
+  description: string;
+}

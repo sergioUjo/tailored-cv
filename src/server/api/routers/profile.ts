@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
-import { users } from "../../../schema";
+import { resumes, users } from "../../../schema";
 import { createInsertSchema } from "drizzle-zod";
 import {
   generateDescription,
@@ -13,6 +13,9 @@ import {
   retrieveProfile,
   saveProfile,
 } from "../../profile";
+import { db } from "../../db";
+import { eq } from "drizzle-orm";
+import { Resume } from "../../../utils/types";
 
 const experience = z.object({
   title: z.string(),
@@ -28,12 +31,44 @@ const upsertUser = createInsertSchema(users).merge(
     educations: z.array(experience),
   })
 );
+const upsertResume = createInsertSchema(resumes).merge(
+  z.object({
+    experiences: z.array(experience),
+    educations: z.array(experience),
+  })
+);
+
 export const profileRouter = createTRPCRouter({
-  get: protectedProcedure.input(z.string()).query(async ({ input }) => {
-    return retrieveProfile(input);
+  get: protectedProcedure.query(async ({ ctx }) => {
+    return retrieveProfile(ctx.auth.userId);
   }),
   update: protectedProcedure.input(upsertUser).mutation(async ({ input }) => {
     return saveProfile(input);
+  }),
+  resumes: createTRPCRouter({
+    update: protectedProcedure
+      .input(upsertResume)
+      .mutation(async ({ input }) => {
+        const v = await db
+          .insert(resumes)
+          .values(input)
+          .onDuplicateKeyUpdate({ set: input });
+        return parseInt(v.insertId);
+      }),
+    get: protectedProcedure.query(async ({ ctx }) => {
+      const result = await db
+        .select()
+        .from(resumes)
+        .where(eq(resumes.userId, ctx.auth.userId));
+      return result;
+    }),
+    getById: protectedProcedure.input(z.number()).query(async ({ input }) => {
+      const result = await db
+        .select()
+        .from(resumes)
+        .where(eq(resumes.id, input));
+      return result[0] as Resume;
+    }),
   }),
   buyTokens: protectedProcedure
     .input(z.enum(["sniffer", "hunter", "professional"]))
@@ -43,14 +78,13 @@ export const profileRouter = createTRPCRouter({
   aiWrite: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
         type: z.string(),
         index: z.number(),
         jobDescription: z.string(),
       })
     )
-    .mutation(async ({ input }) => {
-      const profile = await retrieveProfile(input.userId);
+    .mutation(async ({ input, ctx }) => {
+      const profile = await retrieveProfile(ctx.auth.userId);
       if (profile.tokens === 0) {
         throw new Error("No tokens left");
       }

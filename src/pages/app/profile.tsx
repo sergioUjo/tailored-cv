@@ -1,123 +1,25 @@
-import React from "react";
+import React, { useContext } from "react";
 import AppLayout from "../../components/AppLayout";
 import { api } from "../../utils/api";
-import { useAuth } from "@clerk/nextjs";
-import {
-  type FieldError,
-  type FieldErrors,
-  useFieldArray,
-  useForm,
-  type UseFormRegisterReturn,
-} from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import { HiTrash } from "@react-icons/all-files/hi/HiTrash";
 import { Tab } from "@headlessui/react";
-import { type Experience } from "../../utils/types";
+import { type Experience, type Profile } from "../../utils/types";
+import { LoggedUserContext } from "../../components/LoggedUserProvider";
+import { Input } from "../../components/Input";
+import { TextArea } from "../../components/TextArea";
 
-interface Inputs {
-  firstName: string;
-  lastName: string;
-  title: string;
-  description: string;
-  email: string;
-  phone: string;
-  experiences: {
-    title?: string;
-    company?: string;
-    description?: string;
-    startDate?: string;
-    endDate?: string;
-    location?: string;
-  }[];
-  educations: {
-    title?: string;
-    company?: string;
-    description?: string;
-    startDate?: string;
-    endDate?: string;
-    location?: string;
-  }[];
+function convertDate(experience: Experience): Experience {
+  return {
+    ...experience,
+    startDate: experience.startDate?.split("T")[0] as string,
+    endDate: experience.endDate?.split("T")[0] as string,
+  };
 }
-
-function Input(
-  props: React.InputHTMLAttributes<HTMLInputElement> & {
-    register: UseFormRegisterReturn;
-    errors: FieldErrors<Inputs>;
-    label: string;
-  }
-) {
-  const { errors, label, register, ...rest } = props;
-  const errorKeys = register.name.split(".");
-  const error = errorKeys.reduce<FieldErrors<Inputs> | undefined>(
-    (previousValue, currentValue) =>
-      previousValue && previousValue[currentValue as keyof Inputs],
-    errors
-  ) as FieldError | undefined;
-  return (
-    <div className={"flex flex-col"}>
-      <label
-        className={error ? "text-red-500" : "text-back"}
-        htmlFor={register.name}
-      >
-        {label}
-      </label>
-      <input
-        className={
-          "rounded-lg border  p-2 px-4 py-2 text-base focus:outline-secondary-600 " +
-          (error ? "border-red-500" : "border-gray-200")
-        }
-        {...props}
-        {...rest}
-        {...register}
-        id={register.name}
-      />
-      {error && <p className={"text-sm text-red-500"}>{error.message}</p>}
-    </div>
-  );
-}
-
-function TextArea(
-  props: React.InputHTMLAttributes<HTMLTextAreaElement> & {
-    register: UseFormRegisterReturn;
-    errors: FieldErrors<Inputs>;
-    label: string;
-  }
-) {
-  const { errors, label, register, ...rest } = props;
-  const errorKeys = register.name.split(".");
-  const error = errorKeys.reduce<FieldErrors<Inputs> | undefined>(
-    (previousValue, currentValue) =>
-      previousValue && previousValue[currentValue as keyof Inputs],
-    errors
-  ) as FieldError | undefined;
-  return (
-    <div className={"flex flex-col"}>
-      <label
-        className={error ? "text-red-500" : "text-back"}
-        htmlFor={register.name}
-      >
-        {label}
-      </label>
-      <textarea
-        className={
-          "min-h-[200px] rounded-lg border p-2 px-4 py-2 text-base focus:outline-secondary-600 " +
-          (error ? "border-red-500" : "border-gray-200")
-        }
-        {...props}
-        {...rest}
-        {...register}
-        id={register.name}
-      />
-      {error && <p className={"text-sm text-red-500"}>{error.message}</p>}
-    </div>
-  );
-}
-
-function Profile() {
-  const auth = useAuth();
+function ProfileForm() {
+  const auth = useContext(LoggedUserContext);
   const [selectedTab, setSelectedTab] = React.useState<number>(0);
-  const profile = api.profile.get.useQuery(auth.userId ?? "", {
-    enabled: !!auth.userId,
-  });
+  const profile = api.profile.get.useQuery();
   const updateProfile = api.profile.update.useMutation({
     onSuccess: () => profile.refetch(),
   });
@@ -127,7 +29,7 @@ function Profile() {
     control,
     reset,
     formState: { errors },
-  } = useForm<Inputs>({
+  } = useForm<Profile>({
     values: {
       firstName: profile.data?.firstName ?? "",
       lastName: profile.data?.lastName ?? "",
@@ -135,20 +37,10 @@ function Profile() {
       description: profile.data?.description ?? "",
       email: profile.data?.email ?? "",
       phone: profile.data?.phone ?? "",
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      experiences:
-        (profile.data?.experiences.map((experience) => ({
-          ...experience,
-          startDate: experience.startDate?.split("T")[0],
-          endDate: experience.endDate?.split("T")[0],
-        })) as any) ?? [],
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      educations:
-        (profile.data?.educations.map((experience) => ({
-          ...experience,
-          startDate: experience.startDate?.split("T")[0],
-          endDate: experience.endDate?.split("T")[0],
-        })) as any) ?? [],
+      tokens: profile.data?.tokens ?? 0,
+      id: profile.data?.id ?? "",
+      experiences: profile.data?.experiences.map(convertDate) ?? [],
+      educations: profile.data?.educations.map(convertDate) ?? [],
     },
   });
   const experiences = useFieldArray({
@@ -159,7 +51,7 @@ function Profile() {
     control,
     name: "educations", // unique name for your Field Array
   });
-  if (!auth.isLoaded || profile.isLoading) {
+  if (profile.isLoading) {
     return;
   }
   function tabChangeHandler(index: number) {
@@ -188,15 +80,16 @@ function Profile() {
         <form
           onSubmit={handleSubmit((data) => {
             updateProfile.mutate({
-              id: auth.userId ?? "",
+              id: auth.id,
               firstName: data.firstName,
+              tokens: data.tokens,
               lastName: data.lastName,
               title: data.title,
               email: data.email,
               phone: data.phone,
               description: data.description,
-              experiences: data.experiences as Experience[],
-              educations: data.educations as Experience[],
+              experiences: data.experiences,
+              educations: data.educations,
             });
           })}
           className={"flex flex-col gap-4 pb-4"}
@@ -452,4 +345,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default ProfileForm;

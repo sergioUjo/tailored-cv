@@ -1,9 +1,11 @@
-import { AppProps, type AppType } from "next/app";
+import { type AppProps, type AppType } from "next/app";
 import "../styles/globals.css";
 import { PT_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { api } from "../utils/api";
 import { ClerkProvider } from "@clerk/nextjs";
+import LoggedUserProvider from "../components/LoggedUserProvider";
+import { Suspense } from "react";
 
 const font = PT_Serif({
   weight: "400",
@@ -13,10 +15,14 @@ const font = PT_Serif({
 const MyApp: AppType = ({ Component, pageProps, router }: AppProps) => {
   return (
     <ClerkProvider>
-      <main className={font.className}>
-        <Component {...pageProps} />
-        <Analytics />
-      </main>
+      <LoggedUserProvider>
+        <Suspense fallback={<div />}>
+          <main className={font.className}>
+            <Component {...pageProps} />
+            <Analytics />
+          </main>
+        </Suspense>
+      </LoggedUserProvider>
     </ClerkProvider>
   );
 };
