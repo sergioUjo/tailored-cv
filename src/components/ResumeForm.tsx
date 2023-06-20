@@ -226,9 +226,11 @@ function ResumeForm() {
                       "w-full rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"
                     }
                   />
-                  <h2 className={"mb-2 border-b border-black text-xl"}>
-                    Education
-                  </h2>
+                  {(resume.data?.educations.length ?? 0) > 0 && (
+                    <h2 className={"mb-2 border-b border-black text-xl"}>
+                      Education
+                    </h2>
+                  )}
                   {resume.data?.educations.map((experience, i) => (
                     <Experience
                       {...experience}
@@ -239,9 +241,11 @@ function ResumeForm() {
                       jobDescription={jobDescription}
                     />
                   ))}
-                  <h2 className={"mb-2 border-b border-black text-xl"}>
-                    Professional Experience
-                  </h2>
+                  {(resume.data?.experiences.length ?? 0) > 0 && (
+                    <h2 className={"mb-2 border-b border-black text-xl"}>
+                      Professional Experience
+                    </h2>
+                  )}
                   {resume.data?.experiences.map((experience, i) => (
                     <Experience
                       {...experience}

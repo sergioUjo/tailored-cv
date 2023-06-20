@@ -3,12 +3,14 @@ import AppLayout from "../../../components/AppLayout";
 import Link from "next/link";
 import { api } from "../../../utils/api";
 import { LoggedUserContext } from "../../../components/LoggedUserProvider";
+import { useRouter } from "next/router";
 function useCreateResume() {
   const user = useContext(LoggedUserContext);
   const profile = api.profile.get.useQuery();
+  const router = useRouter();
   const createResume = api.profile.resumes.update.useMutation({
-    onSuccess: (id) => {
-      window.location.href = `/app/applications/${id}`;
+    onSuccess: async (id) => {
+      await router.push(`/app/applications/${id}`);
     },
   });
 
@@ -17,7 +19,7 @@ function useCreateResume() {
     create: () =>
       createResume.mutate({
         description: "",
-        title: "Placeholder",
+        title: "",
         jobDescription: "",
         userId: user.id,
         experiences:
@@ -35,18 +37,34 @@ function useCreateResume() {
 }
 function Index() {
   const resumesRequest = api.profile.resumes.get.useQuery();
+  const profileRequest = api.profile.get.useQuery(undefined, {
+    suspense: true,
+  });
   const resumes = resumesRequest.data ?? [];
   const createResume = useCreateResume();
+  const isIncomplete =
+    !profileRequest.data || profileRequest.data.firstName.length === 0;
+  const disableCreate =
+    createResume.isLoading || createResume.isSuccess || isIncomplete;
   return (
     <AppLayout>
       <h1 className={"mb-4 text-4xl font-bold text-primary-600"}>
         Aplications
       </h1>
+      {isIncomplete && (
+        <p className={"mb-4 rounded-lg bg-gray-100 p-4 text-lg text-gray-500"}>
+          Complete your{" "}
+          <Link href={"/app/profile"} className={"text-primary-600 underline"}>
+            profile
+          </Link>{" "}
+          to start creating applications
+        </p>
+      )}
       <div className={"flex flex-wrap gap-4"}>
         <button
           onClick={createResume.create}
-          disabled={createResume.isLoading || createResume.isSuccess}
-          className=" flex h-44 w-44 items-center justify-center rounded-lg border border-gray-100 bg-white text-center text-7xl font-bold text-primary-600 shadow hover:text-primary-700 hover:shadow-lg"
+          disabled={disableCreate}
+          className="flex h-44 w-44 items-center justify-center rounded-lg border border-gray-100 bg-white text-center text-7xl font-bold text-primary-600 shadow hover:text-primary-700 hover:shadow-lg disabled:bg-gray-100 disabled:text-gray-500"
         >
           +
         </button>
