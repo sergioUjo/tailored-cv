@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { Resume } from "../utils/types";
 import { Tab } from "@headlessui/react";
 import { Input } from "./Input";
+import { TextArea } from "./TextArea";
 
 interface GenerateButtonProps {
   type: string;
@@ -176,32 +177,31 @@ function ResumeForm() {
         <form
           onSubmit={form.handleSubmit(submit)}
           className={
-            "fixed bottom-0 right-0 z-10 m-2  rounded-lg border border-gray-200 bg-white  p-2 shadow-md"
+            "fixed bottom-0 right-0 z-10 m-2 flex gap-2 rounded-lg border border-gray-200 bg-white p-2 shadow-md"
           }
         >
-          <button className={"btn-primary"}>Save</button>
-          <button className={"btn-primary "}>Download</button>
+          <button className={"btn-primary"}>Preview</button>
+          <button disabled className={"btn-primary"}>
+            Save
+          </button>
         </form>
 
         <Tab.Panels>
           <Tab.Panel>
-            <Input
-              type={"text"}
-              placeholder={"Google"}
-              register={form.register("title", { required: true })}
-              errors={form.formState.errors}
-              label={"Company Name"}
-            />
-            <div
-              className={
-                "flex flex-col gap-4 rounded-lg border border-gray-200 bg-white p-4 shadow-md"
-              }
-            >
-              <label>Job description</label>
-              <textarea
-                {...form.register("jobDescription")}
-                className={
-                  "rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"
+            <div className={"flex flex-col gap-4"}>
+              <Input
+                type={"text"}
+                placeholder={"Google"}
+                register={form.register("title", { required: true })}
+                errors={form.formState.errors}
+                label={"Company Name"}
+              />
+              <TextArea
+                register={form.register("jobDescription")}
+                errors={form.formState.errors}
+                label={"Position Description"}
+                placeholder={
+                  "What they are looking for in a candidate, requirements, good to have, etc."
                 }
               />
             </div>

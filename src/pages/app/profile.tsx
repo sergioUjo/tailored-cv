@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AppLayout from "../../components/AppLayout";
 import { api } from "../../utils/api";
 import { useFieldArray, useForm } from "react-hook-form";
@@ -16,33 +16,63 @@ function convertDate(experience: Experience): Experience {
     endDate: experience.endDate?.split("T")[0] as string,
   };
 }
+<div className={"flex justify-end"}></div>;
+interface SaveButtonProps {
+  disabled: boolean;
+}
+function SaveButton({ disabled }: SaveButtonProps) {
+  return (
+    <div
+      className={
+        "sticky bottom-2 right-0 z-10 w-fit self-end rounded-lg border border-gray-200 bg-white p-2 shadow"
+      }
+    >
+      <button type={"submit"} className={"btn-primary"} disabled={disabled}>
+        Save
+      </button>
+    </div>
+  );
+}
 function ProfileForm() {
   const auth = useContext(LoggedUserContext);
-  const [selectedTab, setSelectedTab] = React.useState<number>(0);
+  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [hasChanges, setHasChanges] = useState<boolean>(false);
   const profile = api.profile.get.useQuery();
   const updateProfile = api.profile.update.useMutation({
-    onSuccess: () => profile.refetch(),
+    onSuccess: async () => {
+      setHasChanges(false);
+      await profile.refetch();
+    },
   });
+
   const {
     register,
     handleSubmit,
     control,
+    watch,
     reset,
     formState: { errors },
   } = useForm<Profile>({
-    values: {
+    defaultValues: {
       firstName: profile.data?.firstName ?? "",
       lastName: profile.data?.lastName ?? "",
       title: profile.data?.title ?? "",
       description: profile.data?.description ?? "",
       email: profile.data?.email ?? "",
       phone: profile.data?.phone ?? "",
-      tokens: profile.data?.tokens ?? 0,
+      tokens: profile.data?.tokens ?? 50000,
       id: profile.data?.id ?? "",
       experiences: profile.data?.experiences.map(convertDate) ?? [],
       educations: profile.data?.educations.map(convertDate) ?? [],
     },
   });
+  useEffect(() => {
+    const subscription = watch(() => {
+      setHasChanges(true);
+    });
+    return () => subscription.unsubscribe();
+  }, [watch]);
+
   const experiences = useFieldArray({
     control,
     name: "experiences", // unique name for your Field Array
@@ -55,7 +85,9 @@ function ProfileForm() {
     return;
   }
   function tabChangeHandler(index: number) {
-    reset();
+    if (hasChanges) {
+      reset();
+    }
     setSelectedTab(index);
   }
   return (
@@ -80,19 +112,11 @@ function ProfileForm() {
         <form
           onSubmit={handleSubmit((data) => {
             updateProfile.mutate({
+              ...data,
               id: auth.id,
-              firstName: data.firstName,
-              tokens: data.tokens,
-              lastName: data.lastName,
-              title: data.title,
-              email: data.email,
-              phone: data.phone,
-              description: data.description,
-              experiences: data.experiences,
-              educations: data.educations,
             });
           })}
-          className={"flex flex-col gap-4 pb-4"}
+          className={"relative flex flex-col gap-4 pb-4"}
         >
           <Tab.Panels>
             <Tab.Panel>
@@ -330,15 +354,7 @@ function ProfileForm() {
               </div>
             </Tab.Panel>
           </Tab.Panels>
-          <div className={"flex justify-end"}>
-            <button
-              type={"submit"}
-              className={"btn-primary"}
-              disabled={updateProfile.isLoading}
-            >
-              Save
-            </button>
-          </div>
+          {hasChanges && <SaveButton disabled={updateProfile.isLoading} />}
         </form>
       </Tab.Group>
     </AppLayout>
