@@ -11,6 +11,7 @@ import { Input } from "./Input";
 import { TextArea } from "./TextArea";
 import dynamic from "next/dynamic";
 import { printTimePeriod } from "../utils/time";
+import { HiTrash } from "@react-icons/all-files/hi/HiTrash";
 const Modal = dynamic(() => import("./Modal"), {
   ssr: false,
 });
@@ -131,7 +132,22 @@ function useResume() {
     suspense: true,
   });
 }
+function useDeleteResume() {
+  const router = useRouter();
+  const context = api.useContext();
 
+  const { id } = router.query;
+  const req = api.profile.resumes.delete.useMutation({
+    onSuccess: async () => {
+      await context.profile.resumes.get.invalidate();
+      await router.push("/app/applications");
+    },
+  });
+  return {
+    ...req,
+    mutate: () => req.mutate(parseInt(id as string)),
+  };
+}
 function ResumeForm() {
   const profile = api.profile.get.useQuery(undefined, { suspense: true });
   const resume = useResume();
@@ -140,9 +156,10 @@ function ResumeForm() {
     values: resume.data,
   });
   const update = api.profile.resumes.update.useMutation();
-
   const jobDescription = form.getValues("jobDescription");
-
+  const deleteResume = useDeleteResume();
+  const actionsDisabled =
+    update.isLoading || deleteResume.isLoading || deleteResume.isSuccess;
   function submit(resume: Resume) {
     update.mutate(resume);
   }
@@ -223,7 +240,7 @@ function ResumeForm() {
                   <textarea
                     {...form.register("description")}
                     className={
-                      "w-full rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"
+                      "min-h-[150px] w-full rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"
                     }
                   />
                   {(resume.data?.educations.length ?? 0) > 0 && (
@@ -263,7 +280,7 @@ function ResumeForm() {
           </Tab.Panels>
           <div
             className={
-              "sticky bottom-2 right-0 z-10 w-fit self-end rounded-lg border border-gray-200 bg-white p-2 shadow"
+              "sticky bottom-2 right-0 z-10 flex w-fit gap-2 self-end rounded-lg border border-gray-200 bg-white p-2 shadow"
             }
           >
             <Modal
@@ -272,12 +289,29 @@ function ResumeForm() {
               resume={resume.data!}
             />
             <button
+              type="button"
+              aria-label={"Remove application"}
+              className={
+                "rounded-full px-2 text-red-600 hover:bg-red-100 disabled:bg-gray-100 disabled:text-gray-500"
+              }
+              onClick={() => deleteResume.mutate()}
+              disabled={actionsDisabled}
+            >
+              <HiTrash className={"h-6 w-6"} />
+            </button>
+
+            <button
               className={"btn-primary"}
               onClick={() => setModalOpen(true)}
+              disabled={actionsDisabled}
             >
               Preview
             </button>
-            <button type={"submit"} className={"btn-primary"}>
+            <button
+              type={"submit"}
+              className={"btn-primary"}
+              disabled={actionsDisabled}
+            >
               Save
             </button>
           </div>

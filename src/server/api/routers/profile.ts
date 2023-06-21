@@ -69,6 +69,9 @@ export const profileRouter = createTRPCRouter({
         .where(eq(resumes.id, input));
       return result[0] as Resume;
     }),
+    delete: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
+      await db.delete(resumes).where(eq(resumes.id, input));
+    }),
   }),
   buyTokens: protectedProcedure
     .input(z.enum(["sniffer", "hunter", "professional"]))

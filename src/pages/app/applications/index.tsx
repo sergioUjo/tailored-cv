@@ -60,11 +60,11 @@ function Index() {
           to start creating applications
         </p>
       )}
-      <div className={"flex flex-wrap gap-4"}>
+      <div className={"grid grid-cols-2 gap-4 sm:grid-cols-4 lg:grid-cols-6 "}>
         <button
           onClick={createResume.create}
           disabled={disableCreate}
-          className="flex h-44 w-44 items-center justify-center rounded-lg border border-gray-100 bg-white text-center text-7xl font-bold text-primary-600 shadow hover:text-primary-700 hover:shadow-lg disabled:bg-gray-100 disabled:text-gray-500"
+          className="flex h-32 items-center justify-center rounded-lg border border-gray-100 bg-white text-center text-7xl font-bold text-primary-600 shadow hover:text-primary-700 hover:shadow-lg disabled:bg-gray-100 disabled:text-gray-500"
         >
           +
         </button>
@@ -72,7 +72,7 @@ function Index() {
           <Link
             href={`/app/applications/${resume.id}`}
             key={resume.id}
-            className=" flex h-44 w-44 items-center justify-center rounded-lg border border-gray-100 bg-white text-center shadow hover:text-primary-600 hover:shadow-lg"
+            className=" flex  h-32 flex-grow basis-20 items-center justify-center rounded-lg border border-gray-100 bg-white text-center shadow hover:text-primary-600 hover:shadow-lg"
           >
             {resume.title}
           </Link>

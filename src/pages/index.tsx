@@ -27,7 +27,7 @@ const Home: NextPage = () => {
           content="The ultimate app designed to elevate your job application game. Empowers you to create personalized résumés and cover letters for each specific position you apply to."
         />
         <meta property="og:title" content="TailoredCV" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/logo.svg" />
       </Head>
       <main className="min-h-screen bg-white">
         <header
