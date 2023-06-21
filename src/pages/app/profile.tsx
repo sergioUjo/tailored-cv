@@ -217,7 +217,7 @@ function ProfileForm() {
                         type={"text"}
                       />
                     </div>
-                    <div className={"flex gap-2"}>
+                    <div className={"flex flex-wrap gap-2"}>
                       <Input
                         register={register(`experiences.${index}.startDate`, {
                           required: true,
@@ -306,7 +306,7 @@ function ProfileForm() {
                         type={"text"}
                       />
                     </div>
-                    <div className={"flex gap-2"}>
+                    <div className={"flex flex-wrap gap-2"}>
                       <Input
                         register={register(`educations.${index}.startDate`, {
                           required: true,

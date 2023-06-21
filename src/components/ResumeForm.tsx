@@ -150,13 +150,13 @@ function useDeleteResume() {
 }
 function ResumeForm() {
   const profile = api.profile.get.useQuery(undefined, { suspense: true });
-  const resume = useResume();
+  const resumeRemote = useResume();
   const [modalOpen, setModalOpen] = React.useState(false);
   const form = useForm<Resume>({
-    values: resume.data,
+    values: resumeRemote.data,
   });
+  const resume = form.getValues();
   const update = api.profile.resumes.update.useMutation();
-  const jobDescription = form.getValues("jobDescription");
   const deleteResume = useDeleteResume();
   const actionsDisabled =
     update.isLoading || deleteResume.isLoading || deleteResume.isSuccess;
@@ -233,7 +233,7 @@ function ResumeForm() {
                         form.setValue("description", description)
                       }
                       type={"description"}
-                      jobDescription={jobDescription}
+                      jobDescription={resume.jobDescription}
                       index={2}
                     />
                   </div>
@@ -243,34 +243,34 @@ function ResumeForm() {
                       "min-h-[150px] w-full rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"
                     }
                   />
-                  {(resume.data?.educations.length ?? 0) > 0 && (
+                  {(resume.educations.length ?? 0) > 0 && (
                     <h2 className={"mb-2 border-b border-black text-xl"}>
                       Education
                     </h2>
                   )}
-                  {resume.data?.educations.map((experience, i) => (
+                  {resume.educations.map((experience, i) => (
                     <Experience
                       {...experience}
                       key={i}
                       index={i}
                       form={form}
                       type={"educations"}
-                      jobDescription={jobDescription}
+                      jobDescription={resume.jobDescription}
                     />
                   ))}
-                  {(resume.data?.experiences.length ?? 0) > 0 && (
+                  {(resume.experiences.length ?? 0) > 0 && (
                     <h2 className={"mb-2 border-b border-black text-xl"}>
                       Professional Experience
                     </h2>
                   )}
-                  {resume.data?.experiences.map((experience, i) => (
+                  {resume.experiences.map((experience, i) => (
                     <Experience
                       {...experience}
                       key={i}
                       index={i}
                       form={form}
                       type={"experiences"}
-                      jobDescription={jobDescription}
+                      jobDescription={resume.jobDescription}
                     />
                   ))}
                 </div>
@@ -286,7 +286,7 @@ function ResumeForm() {
             <Modal
               isOpen={modalOpen}
               close={() => setModalOpen(false)}
-              resume={resume.data!}
+              resume={resume}
             />
             <button
               type="button"
