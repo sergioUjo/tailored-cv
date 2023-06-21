@@ -16,11 +16,12 @@ export async function retrieveProfile(userId: string): Promise<Profile> {
   };
 }
 
-export function saveProfile(input: Profile) {
-  return db.insert(users).values(input).onDuplicateKeyUpdate({ set: input });
+export async function saveProfile(input: Profile) {
+  await db.insert(users).values(input).onDuplicateKeyUpdate({ set: input });
 }
 
 export async function decreaseProfileTokens(profile: Profile, amount: number) {
+  console.log("decreasing profile tokens", amount);
   await saveProfile({
     ...profile,
     tokens: Math.max(profile.tokens - amount, 0),

@@ -27,4 +27,5 @@ export interface Resume {
   educations: Experience[];
   jobDescription: string;
   description: string;
+  coverLetter: string;
 }

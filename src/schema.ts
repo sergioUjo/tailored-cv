@@ -3,6 +3,7 @@ import {
   json,
   mysqlTable,
   text,
+  longtext,
   timestamp,
   tinytext,
 } from "drizzle-orm/mysql-core";
@@ -24,8 +25,9 @@ export const resumes = mysqlTable("resume", {
   userId: text("userId").notNull(),
   title: text("title").notNull(),
   description: text("description").notNull(),
-  jobDescription: text("jobDescription").notNull(),
+  jobDescription: longtext("jobDescription").notNull(),
   createdAt: timestamp("createdAt").defaultNow(),
   experiences: json("experiences").notNull(),
   educations: json("educations").notNull(),
+  coverLetter: longtext("coverLetter").notNull(),
 });

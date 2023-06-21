@@ -1,69 +1,58 @@
 import { OpenAI } from "langchain/llms/openai";
-import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { loadQAStuffChain } from "langchain/chains";
 import { Document } from "langchain/document";
-import { Experience } from "../../utils/types";
-import { LLMResult } from "langchain/schema";
+import { type Experience, type Profile } from "../../utils/types";
+import { type LLMResult } from "langchain/schema";
+import { decreaseProfileTokens } from "../profile";
 
-// eslint-disable-next-line
-
-interface RequestResult {
-  text: string;
-  cost: number;
-}
-
-async function request(
-  docs: Document[],
-  question: string,
-  onResult: (tokenUsage: number) => void
-) {
+async function request(docs: Document[], question: string, profile: Profile) {
   const llm = new OpenAI({
     openAIApiKey: "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",
-    modelName: "gpt-3.5-turbo",
     callbacks: [
       {
-        handleLLMEnd(output: LLMResult): Promise<void> | void {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-          onResult((output.llmOutput?.tokenUsage?.totalTokens as number) ?? 0);
+        async handleLLMEnd(output: LLMResult): Promise<void> {
+          const generations = output.generations?.flat();
+          console.log("generations", generations);
+          const tokenUsage =
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            (output.llmOutput?.tokenUsage?.totalTokens as number) ?? 0;
+          console.log("token usage", output);
+          await decreaseProfileTokens(profile, tokenUsage);
         },
       },
     ],
   });
   const chain = loadQAStuffChain(llm);
+  console.log(docs);
   const res = await chain.call({
     input_documents: docs,
     question: question,
   });
   return res.text as string;
 }
-
-export async function generateDescription(
+function requestWithFullProfile(
+  profile: Profile,
   jobDescription: string,
-  cvDescription: string,
-  experiences: Experience[],
-  educations: Experience[],
-  onResult: (tokenUsage: number) => void
+  query: string
 ) {
   const jobDescriptionDocument = new Document({
     pageContent: jobDescription,
     metadata: { title: "Job Description" },
   });
   const profileDescription = new Document({
-    pageContent: cvDescription,
-    metadata: { title: "Profile Description" },
+    pageContent: profile.description,
+    metadata: { ...profile, description: "My Profile" },
   });
-  const profileExperiences = experiences.map((experience) => {
-    const { description, ...rest } = experience;
+  const profileExperiences = profile.experiences.map((experience) => {
     return new Document({
-      pageContent: description,
-      metadata: { ...rest, description: "Professional Experience" },
+      pageContent: experience.description,
+      metadata: { ...experience, description: "Professional Experience" },
     });
   });
-  const profileEducations = educations.map((education) => {
-    const { description, ...rest } = education;
+  const profileEducations = profile.educations.map((education) => {
     return new Document({
-      pageContent: description,
-      metadata: { ...rest, description: "Education" },
+      pageContent: education.description,
+      metadata: { ...education, description: "Education" },
     });
   });
   return request(
@@ -73,15 +62,33 @@ export async function generateDescription(
       ...profileExperiences,
       ...profileEducations,
     ],
-    "Write a introduction resume description for this job description based on my profile. Do it in first person with a maximum of 100 words.",
-    onResult
+    query,
+    profile
+  );
+}
+export async function generateDescription(
+  jobDescription: string,
+  profile: Profile
+) {
+  return requestWithFullProfile(
+    profile,
+    jobDescription,
+    "Write a introduction resume description for this job description based on my profile. Do it in first person with a maximum of 100 words."
+  );
+}
+
+export async function generateCover(jobDescription: string, profile: Profile) {
+  return requestWithFullProfile(
+    profile,
+    jobDescription,
+    "Write a cover letter for this job description based on my profile. Do it in first person with a maximum of 100 words."
   );
 }
 
 export async function rewriteExperienceDescription(
   jobDescription: string,
   experience: Experience,
-  onResult: (tokenUsage: number) => void
+  profile: Profile
 ) {
   const jobDescriptionDocument = new Document({
     pageContent: jobDescription,
@@ -95,14 +102,14 @@ export async function rewriteExperienceDescription(
   return request(
     [jobDescriptionDocument, document],
     "Rewrite this experience description by improving it and tailoring it to the job description. Do it in first person with a maximum of 100 words and in a bullet point manner.",
-    onResult
+    profile
   );
 }
 
 export async function rewriteEducationDescription(
   jobDescription: string,
   experience: Experience,
-  onResult: (tokenUsage: number) => void
+  profile: Profile
 ) {
   const jobDescriptionDocument = new Document({
     pageContent: jobDescription,
@@ -116,6 +123,6 @@ export async function rewriteEducationDescription(
   return request(
     [jobDescriptionDocument, document],
     "Rewrite this education description by improving it and tailoring it to the  job description. Do it in first person with a maximum of 100 words.",
-    onResult
+    profile
   );
 }

@@ -19,12 +19,12 @@ interface GenerateButtonProps {
   type: string;
   jobDescription: string;
   onSuccess: (description: string) => void;
-  index: number;
+  index?: number;
 }
 
 function GenerateButton({
   onSuccess,
-  index,
+  index = 0,
   type,
   jobDescription,
 }: GenerateButtonProps) {
@@ -276,7 +276,32 @@ function ResumeForm() {
                 </div>
               </div>
             </Tab.Panel>
-            <Tab.Panel></Tab.Panel>
+            <Tab.Panel>
+              <div
+                className={
+                  "mt-4 flex flex-col rounded-lg border border-gray-200 bg-white p-4 shadow-md"
+                }
+              >
+                <p className={"text-center text-2xl text-gray-500"}>
+                  Dear, {resume.title}
+                </p>
+                <div className={"my-1 flex justify-end gap-1"}>
+                  <GenerateButton
+                    onSuccess={(description) => {
+                      form.setValue("coverLetter", description);
+                    }}
+                    type={"coverLetter"}
+                    jobDescription={resume.description}
+                  />
+                </div>
+                <textarea
+                  {...form.register("coverLetter")}
+                  className={
+                    "min-h-[200px] w-full rounded-lg border border-gray-200 p-2 px-4 py-2 text-base focus:outline-secondary-600"
+                  }
+                />
+              </div>
+            </Tab.Panel>
           </Tab.Panels>
           <div
             className={

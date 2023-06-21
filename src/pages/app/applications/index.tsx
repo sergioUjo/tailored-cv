@@ -21,6 +21,7 @@ function useCreateResume() {
         description: "",
         title: "",
         jobDescription: "",
+        coverLetter: "",
         userId: user.id,
         experiences:
           profile.data?.experiences.map((experience) => ({

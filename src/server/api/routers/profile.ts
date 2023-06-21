@@ -3,19 +3,16 @@ import { createTRPCRouter, protectedProcedure } from "../trpc";
 import { resumes, users } from "../../../schema";
 import { createInsertSchema } from "drizzle-zod";
 import {
+  generateCover,
   generateDescription,
   rewriteEducationDescription,
   rewriteExperienceDescription,
 } from "../langchain";
 import { createCheckoutSession } from "../../stripe";
-import {
-  decreaseProfileTokens,
-  retrieveProfile,
-  saveProfile,
-} from "../../profile";
+import { retrieveProfile, saveProfile } from "../../profile";
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
-import { Resume } from "../../../utils/types";
+import { type Resume } from "../../../utils/types";
 
 const experience = z.object({
   title: z.string(),
@@ -95,27 +92,26 @@ export const profileRouter = createTRPCRouter({
         throw new Error("Profile not found");
       }
       if (input.type === "description") {
-        return generateDescription(
-          input.jobDescription,
-          profile.description,
-          profile.experiences,
-          profile.educations,
-          (tokenUsage) => decreaseProfileTokens(profile, tokenUsage)
-        );
+        return generateDescription(input.jobDescription, profile);
       }
-      if (input.type === "experience" && profile.experiences[input.index]) {
+      const selectedExperience = profile.experiences[input.index];
+      if (input.type === "experiences" && selectedExperience) {
         return rewriteExperienceDescription(
           input.jobDescription,
-          profile.experiences[input.index]!,
-          (tokenUsage) => decreaseProfileTokens(profile, tokenUsage)
+          selectedExperience,
+          profile
         );
       }
-      if (input.type === "education" && profile.educations[input.index]) {
+      const selectedEducation = profile.educations[input.index];
+      if (input.type === "educations" && selectedEducation) {
         return rewriteEducationDescription(
           input.jobDescription,
-          profile.educations[input.index]!,
-          (tokenUsage) => decreaseProfileTokens(profile, tokenUsage)
+          selectedEducation,
+          profile
         );
+      }
+      if (input.type === "coverLetter") {
+        return generateCover(input.jobDescription, profile);
       }
     }),
 });
