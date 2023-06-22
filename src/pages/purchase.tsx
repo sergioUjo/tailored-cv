@@ -1,6 +1,6 @@
 import React from "react";
-import AppLayout from "../../components/AppLayout";
-import { api } from "../../utils/api";
+import AppLayout from "../components/AppLayout";
+import { api } from "../utils/api";
 
 const plans = [
   {

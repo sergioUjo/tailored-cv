@@ -39,9 +39,9 @@ function MobileMenu() {
             {({ active }) => (
               <Link
                 className={
-                  isActive("/app") + (active ? " bg-gray-100 text-black" : "")
+                  isActive("/") + (active ? " bg-gray-100 text-black" : "")
                 }
-                href={"/app"}
+                href={"/"}
               >
                 <RiDashboardLine size={16} />
                 Overview
@@ -52,10 +52,10 @@ function MobileMenu() {
             {({ active }) => (
               <Link
                 className={
-                  isActive("/app/profile") +
+                  isActive("/profile") +
                   (active ? " bg-gray-100 text-black" : "")
                 }
-                href={"/app/profile"}
+                href={"/profile"}
               >
                 <BsFillPersonFill size={16} />
                 My profile
@@ -66,10 +66,10 @@ function MobileMenu() {
             {({ active }) => (
               <Link
                 className={
-                  isActive("/app/applications") +
+                  isActive("/applications") +
                   (active ? " bg-gray-100 text-black" : "")
                 }
-                href={"/app/applications"}
+                href={"/applications"}
               >
                 <IoDocumentTextOutline size={16} />
                 My Applications
@@ -80,10 +80,10 @@ function MobileMenu() {
             {({ active }) => (
               <Link
                 className={
-                  isActive("/app/purchase") +
+                  isActive("/purchase") +
                   (active ? " bg-gray-100 text-black" : "")
                 }
-                href={"/app/purchase"}
+                href={"/purchase"}
               >
                 <FaCoins size={16} />
                 Purchase words

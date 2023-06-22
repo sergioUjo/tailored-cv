@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import AppLayout from "../../components/AppLayout";
-import { api } from "../../utils/api";
+import AppLayout from "../components/AppLayout";
+import { api } from "../utils/api";
 import { useFieldArray, useForm } from "react-hook-form";
 import { HiTrash } from "@react-icons/all-files/hi/HiTrash";
 import { Tab } from "@headlessui/react";
-import { type Experience, type Profile } from "../../utils/types";
-import { LoggedUserContext } from "../../components/LoggedUserProvider";
-import { Input } from "../../components/Input";
-import { TextArea } from "../../components/TextArea";
+import { type Experience, type Profile } from "../utils/types";
+import { LoggedUserContext } from "../components/LoggedUserProvider";
+import { Input } from "../components/Input";
+import { TextArea } from "../components/TextArea";
 
 function convertDate(experience: Experience): Experience {
   return {

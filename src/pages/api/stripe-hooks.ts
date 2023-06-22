@@ -36,7 +36,10 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       const profile = await retrieveProfile(
         paymentIntentSucceeded.metadata.userId
       );
-      increaseProfileTokens(profile, paymentIntentSucceeded.metadata.words);
+      await increaseProfileTokens(
+        profile,
+        parseInt(paymentIntentSucceeded.metadata.words as string)
+      );
       // Then define and call a function to handle the event payment_intent.succeeded
       break;
     // ... handle other event types

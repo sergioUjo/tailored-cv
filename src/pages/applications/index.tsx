@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import AppLayout from "../../../components/AppLayout";
+import AppLayout from "../../components/AppLayout";
 import Link from "next/link";
-import { api } from "../../../utils/api";
-import { LoggedUserContext } from "../../../components/LoggedUserProvider";
+import { api } from "../../utils/api";
+import { LoggedUserContext } from "../../components/LoggedUserProvider";
 import { useRouter } from "next/router";
 function useCreateResume() {
   const user = useContext(LoggedUserContext);
@@ -10,7 +10,7 @@ function useCreateResume() {
   const router = useRouter();
   const createResume = api.profile.resumes.update.useMutation({
     onSuccess: async (id) => {
-      await router.push(`/app/applications/${id}`);
+      await router.push(`/applications/${id}`);
     },
   });
 
@@ -55,7 +55,7 @@ function Index() {
       {isIncomplete && (
         <p className={"mb-4 rounded-lg bg-gray-100 p-4 text-lg text-gray-500"}>
           Complete your{" "}
-          <Link href={"/app/profile"} className={"text-primary-600 underline"}>
+          <Link href={"/profile"} className={"text-primary-600 underline"}>
             profile
           </Link>{" "}
           to start creating applications
@@ -71,7 +71,7 @@ function Index() {
         </button>
         {resumes.map((resume) => (
           <Link
-            href={`/app/applications/${resume.id}`}
+            href={`/applications/${resume.id}`}
             key={resume.id}
             className=" flex  h-32 flex-grow basis-20 items-center justify-center rounded-lg border border-gray-100 bg-white text-center shadow hover:text-primary-600 hover:shadow-lg"
           >

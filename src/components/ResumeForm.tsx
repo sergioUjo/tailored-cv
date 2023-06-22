@@ -140,7 +140,7 @@ function useDeleteResume() {
   const req = api.profile.resumes.delete.useMutation({
     onSuccess: async () => {
       await context.profile.resumes.get.invalidate();
-      await router.push("/app/applications");
+      await router.push("/applications");
     },
   });
   return {

@@ -34,7 +34,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
       >
         <div className={"m-auto flex max-w-7xl justify-between px-4"}>
           <Link
-            href={"/"}
+            href={"https://www.tailoredcv.app"}
             className={"flex items-center gap-2 fill-primary-600"}
           >
             <Logo className="h-8 w-8" />
@@ -52,22 +52,19 @@ function AppLayout({ children }: { children: React.ReactNode }) {
         }
       >
         <div className={"flex w-52 flex-col gap-2"}>
-          <Link className={isActive("/app")} href={"/app"}>
+          <Link className={isActive("/")} href={"/"}>
             <RiDashboardLine size={16} />
             Overview
           </Link>
-          <Link className={isActive("/app/profile")} href={"/app/profile"}>
+          <Link className={isActive("/profile")} href={"/profile"}>
             <BsFillPersonFill size={16} />
             My profile
           </Link>
-          <Link
-            href={"/app/applications"}
-            className={isActive("/app/applications")}
-          >
+          <Link href={"/applications"} className={isActive("/applications")}>
             <IoDocumentTextOutline size={16} />
             My Applications
           </Link>
-          <Link href={"/app/purchase"} className={isActive("/app/purchase")}>
+          <Link href={"/purchase"} className={isActive("/purchase")}>
             <FaCoins size={16} />
             Purchase words
           </Link>
