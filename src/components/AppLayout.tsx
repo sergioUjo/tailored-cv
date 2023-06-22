@@ -5,7 +5,6 @@ import { IoDocumentTextOutline } from "@react-icons/all-files/io5/IoDocumentText
 import { BsFillPersonFill } from "@react-icons/all-files/bs/BsFillPersonFill";
 import { RiDashboardLine } from "@react-icons/all-files/ri/RiDashboardLine";
 import { FaCoins } from "@react-icons/all-files/fa/FaCoins";
-import LoggedUserProvider from "./LoggedUserProvider";
 import Logo from "../svg/Logo";
 import { UserButton } from "@clerk/nextjs";
 import dynamic from "next/dynamic";
@@ -76,7 +75,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
           "m-auto h-full max-h-full max-w-7xl flex-1 p-4 lg:pl-60 2xl:pl-28"
         }
       >
-        <LoggedUserProvider>{children}</LoggedUserProvider>
+        {children}
       </div>
     </div>
   );
