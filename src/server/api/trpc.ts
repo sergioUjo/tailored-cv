@@ -31,6 +31,7 @@ interface AuthContext {
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
+// eslint-disable-next-line @typescript-eslint/require-await
 const createInnerTRPCContext = async ({ auth }: AuthContext) => {
   return {
     auth,

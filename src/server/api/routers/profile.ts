@@ -32,6 +32,7 @@ const upsertResume = createInsertSchema(resumes).merge(
   z.object({
     experiences: z.array(experience),
     educations: z.array(experience),
+    userId: z.string().optional(),
   })
 );
 
@@ -39,17 +40,20 @@ export const profileRouter = createTRPCRouter({
   get: protectedProcedure.query(async ({ ctx }) => {
     return retrieveProfile(ctx.auth.userId);
   }),
-  update: protectedProcedure.input(upsertUser).mutation(async ({ input }) => {
-    return saveProfile(input);
-  }),
+  update: protectedProcedure
+    .input(upsertUser)
+    .mutation(async ({ input, ctx }) => {
+      return saveProfile({ ...input, id: ctx.auth.userId });
+    }),
   resumes: createTRPCRouter({
     update: protectedProcedure
       .input(upsertResume)
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
+        const application = { ...input, userId: ctx.auth.userId };
         const v = await db
           .insert(resumes)
-          .values(input)
-          .onDuplicateKeyUpdate({ set: input });
+          .values(application)
+          .onDuplicateKeyUpdate({ set: application });
         return parseInt(v.insertId);
       }),
     get: protectedProcedure.query(async ({ ctx }) => {

@@ -31,14 +31,17 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   // Handle the event
   switch (event.type) {
     case "payment_intent.succeeded":
-      const paymentIntentSucceeded = event.data.object;
+      const paymentIntentSucceeded = event.data.object as {
+        metadata: { userId: string; words: string };
+      };
       console.log(paymentIntentSucceeded);
+      //
       const profile = await retrieveProfile(
         paymentIntentSucceeded.metadata.userId
       );
       await increaseProfileTokens(
         profile,
-        parseInt(paymentIntentSucceeded.metadata.words as string)
+        parseInt(paymentIntentSucceeded.metadata.words)
       );
       // Then define and call a function to handle the event payment_intent.succeeded
       break;

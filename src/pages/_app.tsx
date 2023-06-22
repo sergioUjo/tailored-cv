@@ -4,7 +4,6 @@ import { PT_Serif } from "next/font/google";
 import { Analytics } from "@vercel/analytics/react";
 import { api } from "../utils/api";
 import { ClerkProvider } from "@clerk/nextjs";
-import LoggedUserProvider from "../components/LoggedUserProvider";
 import { Suspense } from "react";
 import AppSkeleton from "../components/AppSkeleton";
 import Head from "next/head";
@@ -14,7 +13,7 @@ const font = PT_Serif({
   subsets: ["latin"],
 });
 
-const MyApp: AppType = ({ Component, pageProps, router }: AppProps) => {
+const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
   return (
     <ClerkProvider>
       <Head>
@@ -31,14 +30,12 @@ const MyApp: AppType = ({ Component, pageProps, router }: AppProps) => {
         <meta property="og:title" content="TailoredCV" />
         <link rel="icon" href="/logo.svg" />
       </Head>
-      <LoggedUserProvider>
-        <Suspense fallback={<AppSkeleton />}>
-          <main className={font.className}>
-            <Component {...pageProps} />
-            <Analytics />
-          </main>
-        </Suspense>
-      </LoggedUserProvider>
+      <Suspense fallback={<AppSkeleton />}>
+        <main className={font.className}>
+          <Component {...pageProps} />
+          <Analytics />
+        </main>
+      </Suspense>
     </ClerkProvider>
   );
 };

@@ -13,7 +13,7 @@ const plans = [
       <p key={"I"}>Individual configuration</p>,
       <span key={"A"}>
         AI Words <span className="font-semibold">50k</span>
-        <span className="text-gray-500"> ~20 CV's</span>
+        <span className="text-gray-500"> ~20 CV&apos;s</span>
       </span>,
       <span key={"V"}>Résumé writer</span>,
       <span key={"A"}>Cover Letter writer</span>,
@@ -28,7 +28,7 @@ const plans = [
       <p key={"I"}>Individual configuration</p>,
       <span key={"A"}>
         AI Words <span className="font-semibold">110k</span>
-        <span className="text-gray-500"> ~44 CV's</span>
+        <span className="text-gray-500"> ~44 CV&apos;s</span>
       </span>,
       <span key={"V"}>Résumé writer</span>,
       <span key={"A"}>Cover Letter writer</span>,
@@ -43,7 +43,7 @@ const plans = [
       <p key={"I"}>Individual configuration</p>,
       <span key={"A"}>
         AI Words <span className="font-semibold">250k</span>
-        <span className="text-gray-500"> ~120 CV's</span>
+        <span className="text-gray-500"> ~120 CV&apos;s</span>
       </span>,
       <span key={"V"}>Résumé writer</span>,
       <span key={"A"}>Cover Letter writer</span>,

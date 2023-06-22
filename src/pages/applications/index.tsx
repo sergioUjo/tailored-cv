@@ -1,11 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import AppLayout from "../../components/AppLayout";
 import Link from "next/link";
 import { api } from "../../utils/api";
-import { LoggedUserContext } from "../../components/LoggedUserProvider";
 import { useRouter } from "next/router";
+
 function useCreateResume() {
-  const user = useContext(LoggedUserContext);
   const profile = api.profile.get.useQuery();
   const router = useRouter();
   const createResume = api.profile.resumes.update.useMutation({
@@ -22,7 +21,6 @@ function useCreateResume() {
         title: "",
         jobDescription: "",
         coverLetter: "",
-        userId: user.id,
         experiences:
           profile.data?.experiences.map((experience) => ({
             ...experience,
@@ -36,6 +34,7 @@ function useCreateResume() {
       }),
   };
 }
+
 function Index() {
   const resumesRequest = api.profile.resumes.get.useQuery();
   const profileRequest = api.profile.get.useQuery(undefined, {

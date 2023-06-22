@@ -1,13 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import AppLayout from "../components/AppLayout";
 import { api } from "../utils/api";
 import { useFieldArray, useForm } from "react-hook-form";
 import { HiTrash } from "@react-icons/all-files/hi/HiTrash";
 import { Tab } from "@headlessui/react";
 import { type Experience, type Profile } from "../utils/types";
-import { LoggedUserContext } from "../components/LoggedUserProvider";
 import { Input } from "../components/Input";
 import { TextArea } from "../components/TextArea";
+
+const EMPTY_EXPERIENCE: Experience = {
+  description: "",
+  company: "",
+  startDate: new Date().toISOString().split("T")[0]!,
+  title: "",
+  location: "",
+};
 
 function convertDate(experience: Experience): Experience {
   return {
@@ -16,10 +23,13 @@ function convertDate(experience: Experience): Experience {
     endDate: experience.endDate?.split("T")[0] as string,
   };
 }
+
 <div className={"flex justify-end"}></div>;
+
 interface SaveButtonProps {
   disabled: boolean;
 }
+
 function SaveButton({ disabled }: SaveButtonProps) {
   return (
     <div
@@ -33,8 +43,8 @@ function SaveButton({ disabled }: SaveButtonProps) {
     </div>
   );
 }
+
 function ProfileForm() {
-  const auth = useContext(LoggedUserContext);
   const [selectedTab, setSelectedTab] = useState(0);
   const [hasChanges, setHasChanges] = useState(false);
   const profile = api.profile.get.useQuery(undefined, { suspense: true });
@@ -106,12 +116,11 @@ function ProfileForm() {
           )}
         </Tab.List>
         <form
-          onSubmit={handleSubmit((data) => {
-            updateProfile.mutate({
-              ...data,
-              id: auth.id,
-            });
-          })}
+          onSubmit={
+            handleSubmit((data) => {
+              updateProfile.mutate(data);
+            }) as () => void
+          }
           className={"relative flex flex-col gap-4 pb-4"}
         >
           <Tab.Panels>
@@ -253,7 +262,7 @@ function ProfileForm() {
                 <button
                   type="button"
                   className={"btn-primary m-auto"}
-                  onClick={() => experiences.append({})}
+                  onClick={() => experiences.append(EMPTY_EXPERIENCE)}
                 >
                   Add Experience
                 </button>
@@ -343,7 +352,7 @@ function ProfileForm() {
                 <button
                   type="button"
                   className={"btn-primary m-auto"}
-                  onClick={() => educations.append({})}
+                  onClick={() => educations.append(EMPTY_EXPERIENCE)}
                 >
                   Add Education
                 </button>

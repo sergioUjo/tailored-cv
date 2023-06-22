@@ -1,6 +1,6 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, PropsWithChildren, useState } from "react";
-import { Experience, Resume } from "../utils/types";
+import React, { Fragment, type PropsWithChildren } from "react";
+import { type Experience, type Resume } from "../utils/types";
 import { Document, Page, PDFViewer, Text, View } from "@react-pdf/renderer";
 import { api } from "../utils/api";
 import { printTimePeriod } from "../utils/time";
@@ -10,6 +10,7 @@ interface Props {
   close: () => void;
   resume: Resume;
 }
+
 // Create styles
 function Experience({ experience }: { experience: Experience }) {
   const descriptionItems = experience.description.split("\n");
@@ -57,12 +58,8 @@ function Experience({ experience }: { experience: Experience }) {
     </View>
   );
 }
-export default function Modal({
-  isOpen,
-  close,
-  children,
-  resume,
-}: PropsWithChildren<Props>) {
+
+export default function Modal({ isOpen, close, resume }: Props) {
   const profile = api.profile.get.useQuery().data!;
   return (
     <Transition appear show={isOpen} as={Fragment}>

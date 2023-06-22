@@ -188,7 +188,7 @@ function ResumeForm() {
         </Tab.List>
 
         <form
-          onSubmit={form.handleSubmit(submit)}
+          onSubmit={form.handleSubmit(submit) as () => void}
           className={"relative flex flex-col gap-4"}
         >
           <Tab.Panels>
@@ -219,7 +219,9 @@ function ResumeForm() {
               >
                 <div>
                   <p className={"text-center text-2xl text-gray-500"}>
-                    {profile.data?.firstName + " " + profile.data?.lastName}
+                    {`${profile.data?.firstName ?? ""} ${
+                      profile.data?.lastName ?? ""
+                    }`}
                   </p>
                   <div>
                     <p className={"text-center text-base text-gray-500"}>
