@@ -1,6 +1,6 @@
 import { db } from "./db";
 import { users } from "../schema";
-import { type Experience, type Profile } from "../utils/types";
+import { type Profile } from "../utils/types";
 import { eq } from "drizzle-orm";
 
 export async function retrieveProfile(userId: string): Promise<Profile> {
@@ -9,11 +9,7 @@ export async function retrieveProfile(userId: string): Promise<Profile> {
   if (!profile) {
     throw new Error("Profile not found");
   }
-  return {
-    ...profile,
-    experiences: (res[0]?.experiences ?? []) as Experience[],
-    educations: (res[0]?.educations ?? []) as Experience[],
-  };
+  return profile as Profile;
 }
 
 export async function saveProfile(input: Profile) {

@@ -1,5 +1,3 @@
-import React from "react";
-
 export type Plan = "sniffer" | "hunter" | "professional";
 export const planStore = {
   sniffer: {

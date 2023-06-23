@@ -4,7 +4,6 @@
  */
 await import("./src/env.mjs");
 import withBundleAnalyzer from '@next/bundle-analyzer';
-import mdx from '@next/mdx'
 
 const bundleAnalyzer = withBundleAnalyzer({
     enabled: process.env.ANALYZE === 'true',
@@ -28,18 +27,4 @@ const config = {
 };
 // next.config.js
 
-const withMDX = mdx({
-    extension: /\.mdx?$/,
-    options: {
-        // If you use remark-gfm, you'll need to use next.config.mjs
-        // as the package is ESM only
-        // https://github.com/remarkjs/remark-gfm#install
-        remarkPlugins: [],
-        rehypePlugins: [],
-        // If you use `MDXProvider`, uncomment the following line.
-        // providerImportSource: "@mdx-js/react",
-    },
-})
-
-// Merge MDX config with Next.js config
 export default bundleAnalyzer(config)

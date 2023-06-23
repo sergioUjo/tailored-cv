@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import React, { Fragment, type PropsWithChildren } from "react";
+import React, { Fragment } from "react";
 import { type Experience, type Resume } from "../utils/types";
 import { Document, Page, PDFViewer, Text, View } from "@react-pdf/renderer";
 import { api } from "../utils/api";
@@ -90,9 +90,9 @@ export default function Modal({ isOpen, close, resume }: Props) {
               <Dialog.Panel className="flex max-w-7xl flex-1 transform flex-col overflow-hidden rounded-lg bg-white p-4 text-left align-middle shadow-xl transition-all">
                 <Dialog.Title
                   as="h3"
-                  className="text-lg font-medium leading-6 text-gray-900"
+                  className="sr-only text-lg font-medium leading-6 text-gray-900"
                 >
-                  Payment successful
+                  Résumé download
                 </Dialog.Title>
                 <PDFViewer className={"flex-1"}>
                   <Document>
@@ -155,13 +155,9 @@ export default function Modal({ isOpen, close, resume }: Props) {
                   </Document>
                 </PDFViewer>
 
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="btn-primary self-end"
-                    onClick={close}
-                  >
-                    Got it, thanks!
+                <div className="mt-4 flex justify-end">
+                  <button type="button" className="btn-primary" onClick={close}>
+                    Close
                   </button>
                 </div>
               </Dialog.Panel>

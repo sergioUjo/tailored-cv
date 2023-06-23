@@ -37,9 +37,7 @@ function useCreateResume() {
 
 function Index() {
   const resumesRequest = api.profile.resumes.get.useQuery();
-  const profileRequest = api.profile.get.useQuery(undefined, {
-    suspense: true,
-  });
+  const profileRequest = api.profile.get.useQuery();
   const resumes = resumesRequest.data ?? [];
   const createResume = useCreateResume();
   const isIncomplete =

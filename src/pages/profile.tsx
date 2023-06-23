@@ -11,7 +11,7 @@ import { TextArea } from "../components/TextArea";
 const EMPTY_EXPERIENCE: Experience = {
   description: "",
   company: "",
-  startDate: new Date().toISOString().split("T")[0]!,
+  startDate: new Date().toISOString().split("T")[0] as string,
   title: "",
   location: "",
 };
@@ -23,9 +23,6 @@ function convertDate(experience: Experience): Experience {
     endDate: experience.endDate?.split("T")[0] as string,
   };
 }
-
-<div className={"flex justify-end"}></div>;
-
 interface SaveButtonProps {
   disabled: boolean;
 }
@@ -47,7 +44,7 @@ function SaveButton({ disabled }: SaveButtonProps) {
 function ProfileForm() {
   const [selectedTab, setSelectedTab] = useState(0);
   const [hasChanges, setHasChanges] = useState(false);
-  const profile = api.profile.get.useQuery(undefined, { suspense: true });
+  const profile = api.profile.get.useQuery();
   const updateProfile = api.profile.update.useMutation({
     onSuccess: async () => {
       setHasChanges(false);
@@ -90,7 +87,7 @@ function ProfileForm() {
     control,
     name: "educations", // unique name for your Field Array
   });
-  if (profile.isLoading) {
+  if (!profile.data) {
     return;
   }
   return (
