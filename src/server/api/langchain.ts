@@ -4,10 +4,11 @@ import { Document } from "langchain/document";
 import { type Experience, type Profile } from "../../utils/types";
 import { type LLMResult } from "langchain/schema";
 import { decreaseProfileTokens } from "../profile";
+import { env } from "../../env.mjs";
 
 async function request(docs: Document[], question: string, profile: Profile) {
   const llm = new OpenAI({
-    openAIApiKey: "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",
+    openAIApiKey: env.OPENAI_API_KEY,
     callbacks: [
       {
         async handleLLMEnd(output: LLMResult): Promise<void> {
