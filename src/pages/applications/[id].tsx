@@ -144,7 +144,9 @@ function Experience({
 function useResume() {
   const router = useRouter();
   const { id } = router.query;
-  return api.profile.resumes.getById.useQuery(parseInt(id as string));
+  return api.profile.resumes.getById.useQuery(parseInt(id as string), {
+    enabled: id !== undefined,
+  });
 }
 function useDeleteResume() {
   const router = useRouter();
@@ -178,7 +180,7 @@ function ResumeForm() {
   function submit(resume: Resume) {
     update.mutate(resume);
   }
-  if (!profile.data || !resumeRemote.data || !resume.description) {
+  if (!profile.data || !resumeRemote.data || resume.description === undefined) {
     return null;
   }
 

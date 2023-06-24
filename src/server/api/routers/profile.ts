@@ -44,7 +44,7 @@ export const profileRouter = createTRPCRouter({
   update: protectedProcedure
     .input(upsertUser)
     .mutation(async ({ input, ctx }) => {
-      return saveProfile({ ...input, id: ctx.auth.userId, tokens: 0 });
+      return saveProfile({ ...input, id: ctx.auth.userId });
     }),
   resumes: createTRPCRouter({
     update: protectedProcedure
