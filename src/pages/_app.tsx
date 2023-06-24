@@ -31,7 +31,7 @@ const MyApp: AppType = ({ Component, pageProps }: AppProps) => {
         <link rel="icon" href="/logo.svg" />
       </Head>
       <Suspense fallback={<AppSkeleton />}>
-        <main className={font.className}>
+        <main className={font.className + " text-black"}>
           <Component {...pageProps} />
           <Analytics />
         </main>
