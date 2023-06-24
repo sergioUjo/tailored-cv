@@ -31,7 +31,7 @@ export function createCheckoutSession(userId: string, plan: Plan) {
       },
     },
     mode: "payment",
-    success_url: "https://example.com/success",
-    cancel_url: "https://example.com/failure",
+    success_url: "https://app.tailoredcv.app/",
+    cancel_url: "https://app.tailoredcv.app/",
   });
 }

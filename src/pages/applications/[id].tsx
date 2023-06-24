@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import "react-toastify/dist/ReactToastify.css";
 import { ImMagicWand } from "@react-icons/all-files/im/ImMagicWand";
 import { api } from "../../utils/api";
 import AppLayout from "../../components/AppLayout";
@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import { printTimePeriod } from "../../utils/time";
 import { HiTrash } from "@react-icons/all-files/hi/HiTrash";
 import { HiDocumentDownload } from "@react-icons/all-files/hi/HiDocumentDownload";
+import { toast, ToastContainer } from "react-toastify";
 const Modal = dynamic(() => import("../../components/Modal"), {
   ssr: false,
 });
@@ -35,6 +36,19 @@ function GenerateButton({
       onSuccess(data ?? "");
       await context.profile.get.invalidate();
     },
+    onError: (error) => {
+      if (error.data?.code === "BAD_REQUEST") {
+        toast.error("You are out of AI words.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: "light",
+        });
+      }
+    },
   });
 
   return (
@@ -56,6 +70,7 @@ function GenerateButton({
         className={"inset-y absolute left-0 flex h-6 w-6 items-center pl-2"}
       />
       AI Write
+      <ToastContainer />
     </button>
   );
 }
@@ -129,9 +144,7 @@ function Experience({
 function useResume() {
   const router = useRouter();
   const { id } = router.query;
-  return api.profile.resumes.getById.useQuery(parseInt(id as string), {
-    suspense: true,
-  });
+  return api.profile.resumes.getById.useQuery(parseInt(id as string));
 }
 function useDeleteResume() {
   const router = useRouter();
@@ -165,7 +178,7 @@ function ResumeForm() {
   function submit(resume: Resume) {
     update.mutate(resume);
   }
-  if (!profile.data) {
+  if (!profile.data || !resumeRemote.data || !resume.description) {
     return null;
   }
 

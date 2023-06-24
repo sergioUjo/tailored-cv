@@ -99,7 +99,7 @@ export default function Modal({ isOpen, close, resume }: Props) {
                     <Page
                       size="A4"
                       style={{
-                        padding: 4,
+                        padding: 16,
                         backgroundColor: "white",
                         fontSize: 12,
                       }}

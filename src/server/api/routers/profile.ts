@@ -13,6 +13,7 @@ import { retrieveProfile, saveProfile } from "../../profile";
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { type Resume } from "../../../utils/types";
+import { TRPCError } from "@trpc/server";
 
 const experience = z.object({
   title: z.string(),
@@ -43,7 +44,7 @@ export const profileRouter = createTRPCRouter({
   update: protectedProcedure
     .input(upsertUser)
     .mutation(async ({ input, ctx }) => {
-      return saveProfile({ ...input, id: ctx.auth.userId });
+      return saveProfile({ ...input, id: ctx.auth.userId, tokens: 0 });
     }),
   resumes: createTRPCRouter({
     update: protectedProcedure
@@ -90,7 +91,7 @@ export const profileRouter = createTRPCRouter({
     .mutation(async ({ input, ctx }) => {
       const profile = await retrieveProfile(ctx.auth.userId);
       if (profile.tokens === 0) {
-        throw new Error("No tokens left");
+        throw new TRPCError({ code: "BAD_REQUEST", message: "noTokens" });
       }
       if (!profile) {
         throw new Error("Profile not found");
