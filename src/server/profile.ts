@@ -2,12 +2,25 @@ import { db } from "./db";
 import { users } from "../schema";
 import { type Profile } from "../utils/types";
 import { eq } from "drizzle-orm";
-
+const DEFAULT_PROFILE = {
+  firstName: "",
+  lastName: "",
+  title: "",
+  description: "",
+  email: "",
+  phone: "",
+  tokens: 50000,
+  experiences: [],
+  educations: [],
+};
 export async function retrieveProfile(userId: string): Promise<Profile> {
   const res = await db.select().from(users).where(eq(users.id, userId));
   const profile = res[0];
   if (!profile) {
-    throw new Error("Profile not found");
+    return {
+      ...DEFAULT_PROFILE,
+      id: userId,
+    };
   }
   return profile as Profile;
 }
